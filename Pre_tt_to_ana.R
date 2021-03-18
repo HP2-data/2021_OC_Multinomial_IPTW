@@ -215,6 +215,8 @@ df_pre_impute <- df_few_pat %>% select(-all_of(nearZeroVar(.,freqCut = 80/20,nam
 
 
 
+
+
 df_post_imput <- impute_si_changement(df_pre_impute,"data/genere/data_impute.rds",reimputation = FALSE)
 
 

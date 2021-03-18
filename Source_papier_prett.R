@@ -1,7 +1,9 @@
 #########################################################################################
 # remove identicale column
 distinc_col <- function(df_func,return_list_col_supr = TRUE){
-  column_unique_df <- df_func %>% t.df() %>% distinct_at(vars(-key),.keep_all = TRUE)
+  column_unique_df <- df_func %>% 
+    t.df() %>% 
+    distinct_at(vars(-key),.keep_all = TRUE)
   df_col_unique <- df_func %>% select(all_of(column_unique_df$key))
   
   if (return_list_col_supr) {
@@ -27,7 +29,9 @@ column_comparator <- function(col_a_compar,df_compar_func){
       (is.na(col_a_compar_temp) & is.na(col_a_compar ))
     matching_col <- c(names(df_compar_func[,x]),names(which(apply(column_compared,2,all))))
   })
-  liste_colum_identique  <- lapply(liste_colum_identique, function(x) x[length(x) > 1]) %>% compact()
+  
+  liste_colum_identique  <- lapply(liste_colum_identique, function(x) x[length(x) > 1]) %>% 
+    compact()
   return(liste_colum_identique)
 }
 ##########################################################################################
@@ -60,7 +64,8 @@ select_manuel_verif <- function(fuc_list_manu,choose_elem){
     bool_in_list <- sapply(seq_along(choose_elem), function(x) choose_elem[x] %in% fuc_list_manu[[x]])
     if (all(bool_in_list)) {
       
-      res <- sapply(seq_along(choose_elem), function(x) fuc_list_manu[[x]][fuc_list_manu[[x]]  %notin% choose_elem[x]]) %>% 
+      res <- sapply(seq_along(choose_elem),
+                    function(x) fuc_list_manu[[x]][fuc_list_manu[[x]]  %notin% choose_elem[x]]) %>% 
         compact %>% unlist
     } else {
       stop(paste0("choose elements ",choose_elem[!bool_in_list], " not in list"))
@@ -99,7 +104,8 @@ impute_si_changement <- function(data_frame_a_verif,path,reimputation = FALSE){
   if ((all(sort(colnames(data_frame_a_verif)) == sort(colnames(df_impute_ex)) ) & 
        (nrow(data_frame_a_verif) ==  nrow(df_impute_ex))) & !reimputation) {
     res <- df_impute_ex
-  } else if (any(sort(colnames(data_frame_a_verif)) != sort(colnames(df_impute_ex))) | reimputation | nrow(df_impute_ex) == 0 | nrow(df_impute_ex) != nrow(data_frame_a_verif))  {
+  } else if (
+    any(sort(colnames(data_frame_a_verif)) != sort(colnames(df_impute_ex))) | reimputation | nrow(df_impute_ex) == 0 | nrow(df_impute_ex) != nrow(data_frame_a_verif))  {
     cat("Reimputation can be long + ou - one hour")
       imputed_Data_func <- mice::mice(data_frame_a_verif,
                                       m = 10,
@@ -349,7 +355,7 @@ calcule_pds_stage <- function(donne,
   poid_trunc_df <- Trucature_pds_function(res$Weight,percentile_tronc)
   
   poid_trunc_stab_df <- Trucature_pds_function(res$SWeight,percentile_tronc) 
-  
+
 
   return(list(df = res,
               res_intermediaire = list(

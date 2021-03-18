@@ -72,8 +72,8 @@ function_res_papier <- function(data, index,params_fun ){
   treatment_effect_df <- predict(model_pred_outcomes,newdata = df_pred) %>% matrix(nrow = nrow(df_fun) ,ncol = length(unique(unique_expo)))
   
   colnames(treatment_effect_df)  <- paste0("treatment_grp_", unique(unique_expo))
-  
-  return(list(var_selec = Var_model_outcome,
+
+    return(list(var_selec = Var_model_outcome,
               poids = poids_strap,
               reg_pond= coef(model_pred_outcomes),
               Treatment_effect = treatment_effect_df,
@@ -81,7 +81,8 @@ function_res_papier <- function(data, index,params_fun ){
               result_func = res_function_poids$df,
               reg_non_pond = coef(model_pred_outcomes_non_pond),
               estim_reg_lin = df_pred_ss_pond,
-              ind = index
+              ind = index,
+              mod_poids_coef = coef(res_function_poids$res_intermediaire$regression_modele_pds$regression_temps_ind)
   ))
 }
 
@@ -103,7 +104,7 @@ if("OK" =="pas OK"){
   saveRDS(boot_strap_full_process, file = paste0("data/genere/bott_strap_full_process.rds"))
 }
 
-  
+ 
   
 boot_strap_full_process <- readRDS("data/genere/bott_strap_full_process.rds")
 
@@ -140,7 +141,7 @@ summarry_boot_strap_pds_trunc <- boot_strap_pds_trunc %>%
   )  
 
 # Weight summary among bootstrap
-descriptif_pds_boot <- lapply(boot_strap_full_process[6,],function(x){
+descriptif_pds_boot_sumary_table <- lapply(boot_strap_full_process[6,],function(x){
   x %>% group_by(exposition)  %>% 
     summarise("mean_W" = mean(Weight) ,
               "min_W" = min(Weight),
@@ -153,10 +154,10 @@ descriptif_pds_boot <- lapply(boot_strap_full_process[6,],function(x){
 }) %>% bind_rows() 
 
 
-summarydescriptif_pds_boot <- descriptif_pds_boot %>% 
+summarydescriptif_pds_boot <- descriptif_pds_boot_sumary_table %>% 
   group_by(exposition) %>% 
   #mutate_all(list(~as.character())) %>% 
-  summarise_at(vars(-group_cols()),~paste0(sprintf("%.01f",round(mean(.),1)) , "(",sprintf("%.01f",round(quantile(.,0.05),1)),"; ",sprintf("%.01f",round(quantile(.,0.95),1)), ")")) 
+  summarise_at(vars(-group_cols()),~paste0(sprintf("%.01f",round(mean(.),1)) , "(",sprintf("%.01f",round(quantile(.,0.025),1)),"; ",sprintf("%.01f",round(quantile(.,0.975),1)), ")")) 
 
 
 # Bootstrap comparaison of treatment effect estimation
@@ -233,6 +234,36 @@ descriptif_pds_boot <- apply(boot_strap_full_process,2,function(i){
 df_max <- apply(simplify2array(lapply(descriptif_pds_boot,as.matrix)), 1:2, mean) %>% 
   as.data.frame() %>% 
   rownames_to_column()  
+
+
+#################################################################################
+IPWRA_coef_boot <- lapply(boot_strap_full_process[3,] ,function(x){
+  x
+})%>% bind_rows() 
+
+IPWRA_coef_boot_CI <- IPWRA_coef_boot %>% select(-`(Intercept)`) %>% 
+  pivot_longer(everything()) %>% group_by(name) %>% 
+  summarise(moy = mean(value),
+            ci_sup = quantile(value,0.975),
+            ci_inf = quantile(value,0.025) ,
+            .groups = "drop")
+
+#################################################################################
+weight_coef_boot <- lapply(boot_strap_full_process[10,] ,function(x){
+  as.data.frame(x)
+})%>% bind_rows() 
+
+weight_coef_boot_CI <- weight_coef_boot %>% rownames_to_column() %>% select(-`(Intercept)`) %>% 
+  mutate(rowname = str_extract(rowname,"^\\d{1}")) %>% 
+  pivot_longer(-rowname) %>% group_by(name,rowname ) %>% 
+  summarise(moy = mean(value),
+            ci_sup = quantile(value,0.975),
+            ci_inf = quantile(value,0.025) ,
+            .groups = "drop")
+
+
+
+
 
 
 ##################################################################################
@@ -327,8 +358,13 @@ round(mean(select_var$data_frame$df_analyse $Vis_init_INS_IAH >= 30) * 100,1)
 df_4meth %>% mutate(ci = paste0("(",round(ci_inf,2),"; ",round(ci_sup,2),")"),moy = round(moy,2)) %>% select(-ci_sup ,- ci_inf )%>% pivot_wider(names_from = key,values_from = c(moy,ci))
 
 # Anova of initial epworth scale  
-fit <- aov(Vis_init_SYM_echelleEpworth~INS_obs_categ,donnee_boot)
-summary(fit)
+Init_ESS_mean_comp <- aov(Vis_init_SYM_echelleEpworth~INS_obs_categ,donnee_boot)
+summary(Init_ESS_mean_comp)
+
+
+# Anova simple mean follow-up Epworth
+Folow_ESS_mean_comp <- aov(SYM_echelleEpworth~INS_obs_categ,donnee_boot)
+summary(Folow_ESS_mean_comp)
 
 # mean initial obs for all patients
 obs_nume <- read_rds("data/genere/obs_quantit2.rds")
@@ -362,7 +398,7 @@ summarydescriptif_pds_boot  %>% select(exposition,ends_with("_W")) %>% rename(`A
         caption = "Distribution of weights"
   ) %>%
   kable_styling(latex_options =  c( "striped","HOLD_position", "scale_down","repeat_header"))%>%
-  add_footnote(c("Number are express in mean (5th percentile; 95th percentile) of bootstrap iterations"),
+  add_footnote(c("Data are presented as mean (5th percentile; 95th percentile) of bootstrap iterations"),
                notation ="symbol") %>% ecriture_fichier(path_latex)
 write("\\clearpage", path_latex, append=TRUE)  
 
@@ -379,7 +415,7 @@ summarry_boot_strap_pds_trunc %>%
         caption = "Weight truncations"
   ) %>%
   kable_styling(latex_options =  c( "striped","HOLD_position", "scale_down","repeat_header")) %>% 
-  add_footnote(c("Number are express in mean ( 5th percentile; 95th percentile) of bootstrap iterations"),
+  add_footnote(c("Data are presented as mean ( 5th percentile; 95th percentile) of bootstrap iterations"),
                notation ="symbol") %>% 
   ecriture_fichier(path_latex)
 write("\\clearpage", path_latex, append=TRUE)     
@@ -437,6 +473,9 @@ write(header_landscape, path_latex, append=TRUE)
   # column_to_rownames(var = "rowname") %>% 
 table_resume_rapport_latex_ss_escape_order %>%  
   select(-diagnostic) %>% 
+  mutate(rowname = str_replace(rowname,"Epworth sleepiness scale","ESS score"),
+         rowname = str_replace(rowname,"Gender","Gender (male)"),
+         rowname = str_replace(rowname,"Apnea hypopnea index"," Apnea hypopnea index (event/h)")) %>% 
   kable(format = "latex",
         align = "c",
         booktabs = TRUE,
@@ -456,9 +495,10 @@ table_resume_rapport_latex_ss_escape_order %>%
   kable_styling(latex_options =  c( "striped","HOLD_position",
                                     "repeat_header"),
   ) %>%
-  add_footnote(c("Quantitative variables are expressed in mean (standard deviation). Qualitative variables are expressed in number of individuals (% of individuals) ",
+  add_footnote(c("Quantitative variables are presented as mean (standard deviation). Qualitative variables are expressed in number of individuals (% of individuals) ",
                  "t-test was performed for the quantitative variables and a Pearson's Chi squared test for the categorical variables after application of a Bonferroni correction for multiple testing.",
                  "1,2,3,4 numbers in subscript refers to columns statistically different at the 5% threshold. e.g. 1 means that there is a statistically significant difference between the 0-4h adherence group and the 0-4h adherence group (1) for the variable in question.",
+                 "ESS : Epworth Sleepiness Scale",
                  foot_note_var_presence
                  
                  #"* after index corresponding to variables with too few people to perform test"
@@ -470,9 +510,6 @@ end_landscape <- "\\restoregeometry % Restore the global document page margins"
 write(end_landscape, path_latex, append=TRUE)
 write("\\clearpage", path_latex, append=TRUE)  
 
-a <- select_var$data_frame$df_analyse %>%  
-  rename_variables(var_instrum_name = var_instrumental_name)  %>% 
-  .$table_rename 
 
 
 df_box_plot_fig2 <- select_var$data_frame$df_analyse %>%  
@@ -483,8 +520,8 @@ df_box_plot_fig2 <- select_var$data_frame$df_analyse %>%
   pivot_longer(-`Adherence groups`) %>% 
   mutate(`Adherence groups` = as.factor(as.character(`Adherence groups`)),
          name = factor(name,levels = c(
-           "epworth sleepiness scale at diagnosis",
-           "epworth sleepiness scale at follow-up visit"))
+           "Epworth sleepiness score at diagnosis",
+           "Epworth sleepiness score at follow-up visit"))
          )  
 
 
@@ -493,7 +530,7 @@ ggplot(data = df_box_plot_fig2,
   geom_boxplot() +
   ggsci::scale_fill_lancet(labels =groupe_obs_table_latex)  + 
   theme(legend.key = element_blank())+
-  labs(y = "Epworth score",
+  labs(y = "Epworth sleepiness score",
        x = paste0(""),
        fill = "CPAP adherence") 
 ggsave("figure_papier/figure_2.jpeg",
@@ -510,20 +547,24 @@ df_smd_plot <- df_max %>%
 df_plot_max <- table_rename$complete_table %>% 
   select(var_name,Label)  %>% 
   right_join(df_smd_plot ,by = c("var_name" = "rowname")) %>% 
-  select(-var_name) %>% mutate(Label = factor(Label,
+  select(-var_name) %>% 
+  mutate(Label = str_replace(Label,"Diagnosis apnea hypopnea index",
+                             "Apnea Hypopnea Index at diagnosis")) %>%  
+  mutate(Label = factor(Label,
                                               levels = .$Label[order(abs(df_smd_plot$sm_max_non_pondere))])) %>% 
   pivot_longer(-Label) %>% 
   mutate(name = str_replace_all(name,"sm_max_non_pondere","SMD without Weighting"),
-         `Weighting` = str_replace_all(name,"sm_max_pondere","SMD with Weighting")) %>% 
+         `Weighting` = str_replace_all(name,"sm_max_pondere","SMD with Weighting")) %>%  
   select(-name)
 
-ggplot(data = df_plot_max,
-       mapping = aes(x = Label, y = value, group = Weighting, color = Weighting)) +
-  geom_point() +
-  geom_hline(yintercept = 0.1, color = "black", size = 0.1) +
-  scale_y_continuous(breaks = sort(c(seq(0, 1, length.out=5), 0.1))) +
-  coord_flip() +
-  theme_bw() + theme(legend.background = element_rect(fill = "transparent", colour = "transparent"),
+ggplot(data = df_plot_max,  
+       mapping = aes(x = Label, y = value, group = Weighting, color = Weighting)) +  
+  geom_point() +  
+  geom_hline(yintercept = 0.1, color = "black", size = 0.1) +  
+  scale_y_continuous(breaks = sort(c(seq(0, 1, length.out=5), 0.1))) +  
+  coord_flip() +  
+  theme_bw() + 
+  theme(legend.background = element_rect(fill = "transparent", colour = "transparent"),
                      legend.key = element_blank(),
                      legend.title = element_blank(),
                      legend.position=c(.75,0.15)) + 
@@ -542,7 +583,7 @@ ggplot(df_4meth %>% mutate(name = groupe_obs_table_latex[as.numeric(name)]) ,
        aes(x=name,y = moy )) + 
   geom_errorbar(aes(ymin=ci_inf , ymax=ci_sup ), colour="black", width=.1, position=pd ) +
   geom_point(position=pd , size=3) + facet_wrap(~ key) +
-  labs(x = "Adherence groups",y = "Variation of Epworth score")+
+  labs(x = "Adherence groups",y = "Change in Epworth score")+
   theme(strip.text  = element_text(size = 12 , face = "bold" ))
 ggsave("figure_papier/figure_4.jpeg",
        width = 8,
@@ -553,6 +594,197 @@ ggsave("figure_papier/figure_4.jpeg",
 
 
 write("\\end{document}", path_latex, append=TRUE)
+
+
+
+################################################################################
+# Supplementary materials
+path_latex_mat_spp <- "figure_papier/table_mat_sup_iptw.tex"
+
+
+df_pre_imput <- readRDS("data/genere/data_pre_impute_nb_vis_2.rds")
+
+table_resume_pre_impute_rename <- df_pre_imput %>%  rename_variables(var_instrum_name = var_instrumental_name) 
+
+
+diag_var_table_pre_impute_latex <- table_resume_pre_impute_rename$complete_table %>% mutate(diagnostic = !is.na(preffix_all) ) %>% select(Label,diagnostic)
+
+
+
+
+
+
+
+
+
+
+
+
+write("\\documentclass[../matsup.tex]{subfiles}
+\\begin{document}", path_latex_mat_spp, append=FALSE)
+
+# Table des NA 
+#  matériel supplémentaire 
+nb_grp_obs <- max(select_var$data_frame$df_analyse$INS_obs_categ)
+df_latex_number_of_NA <-
+  df_pre_imput %>% 
+  rbind(df_pre_imput %>% 
+          mutate(INS_obs_categ = nb_grp_obs+1)) %>% 
+  group_by(INS_obs_categ) %>% 
+  select_if(~sum(is.na(.))!=0) %>% 
+  mutate(n = NA) %>%  # tricks pour ajouter un compte des lignes
+  summarise_all(funs(sum(is.na(.)))) %>% 
+  select(n,everything()) %>% 
+  mutate_at(vars(-n,-INS_obs_categ), ~paste0(formatC(., format="f", big.mark=",", digits=0) ," (",formatC(.*100/n, format="f", big.mark=",", digits=1) ,"\\%)") ) %>% 
+  mutate(n = as.character(n))%>% 
+  t.df(pivot="INS_obs_categ") %>% 
+  rename_with(~ifelse(as.numeric(.<=nb_grp_obs),
+                      paste0("Adherence group ", .),
+                      paste0("All adherence group")),
+              .cols = -key) %>% 
+  left_join(table_rename$complete_table, by =c("key"= "var_name")) %>% 
+  mutate(Label = ifelse(is.na(real_name) & key == "n","Number of patient", Label), 
+         Label = ifelse(is.na(real_name) & key == "PPC_id_typeMasque","Mask type", Label)
+  ) %>% 
+  select(Label,`All adherence group`,contains("adherence group")) %>% 
+  column_to_rownames(var = "Label") 
+
+df_latex_number_of_NA_order <- df_latex_number_of_NA %>% 
+  rename_all(~c(unlist(df_latex_number_of_NA["Number of patient",],use.names = FALSE) ))  %>% 
+  rownames_to_column() %>% 
+  filter(rowname  != "Number of patient") %>% 
+  inner_join(diag_var_table_pre_impute_latex,by = c( "rowname"="Label")) %>% 
+  mutate( rowname =R.utils::capitalize(str_remove(rowname,"^Diagnosis ") )) %>%
+  arrange(desc(diagnostic)) 
+
+
+write(header_landscape, path_latex_mat_spp, append=TRUE)
+
+df_latex_number_of_NA_order %>% 
+  select(-diagnostic) %>% 
+  mutate(rowname = str_replace(rowname,"Epworth sleepiness scale","ESS score"),
+         rowname = str_replace(rowname,"Gender","Gender (male)"),
+         rowname = str_replace(rowname,"Apnea hypopnea index"," Apnea hypopnea index (event/h)")) %>% 
+  kable(format = "latex",
+        align = "c",
+        booktabs = TRUE,
+        escape = FALSE,
+        label = "Table_number_of_na",
+        linesep = "",
+        col.names = c("",colnames(df_latex_number_of_NA_order)[c(-1,-ncol(df_latex_number_of_NA_order))]) ,
+        caption = "Number of missing value by variables and group"
+  ) %>%
+  add_header_above(c("","All groups",paste0(groupe_obs_table_latex ," (",seq_along(groupe_obs_table_latex),")" )),
+                   line = FALSE) %>%
+  pack_rows("Variables at diagnosis ",1, 
+            sum(df_latex_number_of_NA_order$diagnostic)) %>% 
+  pack_rows("Variables at follow-up",
+            sum(df_latex_number_of_NA_order$diagnostic) + 1 ,
+            nrow(df_latex_number_of_NA_order)) %>% 
+  kable_styling(latex_options = c( "striped","HOLD_position", 
+                                   #"scale_down",
+                                   "repeat_header")) %>%
+  add_footnote(c("ESS : Epworth Sleepiness Scale",
+                 "CPAP : Continuous Positive Airway Pressure"
+    
+  ),threeparttable= TRUE,
+  notation ="symbol") %>% 
+  landscape() %>% 
+  ecriture_fichier(path_latex_mat_spp)
+#write("\\clearpage", path_latex_mat_spp, append=TRUE) 
+write(end_landscape, path_latex_mat_spp, append=TRUE)
+
+write("\\clearpage", path_latex_mat_spp, append=TRUE)  
+
+#################################################################################
+## Weighting models coefficients
+
+weight_coef_boot_CI_rename <- table_rename$complete_table %>% 
+  select(var_name,Label)  %>% 
+  right_join(weight_coef_boot_CI 
+             ,by = c("var_name" = "name")) %>% 
+  select(-var_name) %>% 
+  mutate(Label = str_replace(Label,"Diagnosis apnea hypopnea index",
+                             "Apnea Hypopnea Index at diagnosis")) %>% 
+  mutate(Label = str_replace(Label,"Epworth sleepiness scale","ESS score"),
+         Label = str_replace(Label,"Gender","Gender (male)"),
+         Label = str_replace(Label,"Apnea hypopnea index"," Apnea hypopnea index (event/h)"))  
+
+weight_coef_boot_CI_rename %>% 
+  mutate(coef = paste0(sprintf("%.03f",moy) , "(",sprintf("%.03f",ci_inf),"; ",sprintf("%.03f",ci_sup), ")")) %>% 
+  select(Label,rowname,coef) %>% 
+  pivot_wider(names_from = rowname, names_sep = ".",values_from = coef) %>% 
+  rename_all(~c("Variables", paste0("Coeficients of " ,groupe_obs_table_latex[-1], " group"))) %>% 
+  kable(format = "latex",
+        align = "c",
+        booktabs = TRUE,
+        escape = FALSE,
+        longtable = TRUE,
+        label = "Wheight_coefficients",
+        linesep = "",
+        caption = "Wheight coefficients"
+  ) %>%
+  kable_styling(font_size = 7, latex_options =  c( "striped","HOLD_position", 
+                                                   "repeat_header")) %>% 
+  add_footnote(c("Data are presented as mean ( 5th percentile; 95th percentile) of bootstrap iterations"),
+               notation ="number") %>% 
+  ecriture_fichier(path_latex_mat_spp)
+write("\\clearpage", path_latex_mat_spp, append=TRUE)  
+
+
+
+
+##################################################################################
+## IPWRA models coefficients
+
+
+
+IPWRA_coef_boot_CI_rename <- table_rename$complete_table %>% 
+  select(var_name,Label)  %>% 
+  right_join(IPWRA_coef_boot_CI %>% 
+               mutate(temp_num_name = str_extract(name,"\\d"),
+                      name = str_replace(name,"INS_obs_categ\\d$","INS_obs_categ"),
+                      name = str_replace(name,"Vis_init_FDR_fumeur\\d$","Vis_init_FDR_fumeur"), 
+                      name = str_replace(name,"PPC_id_typeMasque", "PPC_id_typeMasque\\."))                      
+ ,by = c("var_name" = "name")) %>% 
+  mutate(Label = str_remove(Label, "\\.\\d$"),
+         Label = ifelse(is.na(temp_num_name),Label,paste0(Label," ", temp_num_name)))  %>% 
+  select(-var_name,-temp_num_name) %>% 
+  mutate(Label = str_replace(Label,"Diagnosis apnea hypopnea index",
+                             "Apnea Hypopnea Index at diagnosis")) %>% 
+  mutate(Label = str_replace(Label,"Epworth sleepiness scale","ESS score"),
+         Label = str_replace(Label,"Gender","Gender (male)"),
+         Label = str_replace(Label,"Apnea hypopnea index"," Apnea hypopnea index (event/h)"))  
+
+
+IPWRA_coef_boot_CI_rename %>% 
+  mutate(`Model coefficients` = paste0(sprintf("%.03f",moy) , "(",sprintf("%.03f",ci_inf),"; ",sprintf("%.03f",ci_sup), ")")) %>%
+  select(Label,`Model coefficients`) %>% 
+kable(format = "latex",
+      align = "c",
+      booktabs = TRUE,
+      escape = FALSE,
+      longtable = TRUE,
+      label = "IPWRA_coefficients",
+      linesep = "",
+      caption = "IPWRA coefficients"
+) %>%
+  kable_styling(font_size = 7, latex_options =  c( "striped","HOLD_position", 
+                                    #"scale_down",
+                                    "repeat_header")) %>% 
+  add_footnote(c("Data are presented as mean ( 5th percentile; 95th percentile) of bootstrap iterations"),
+               notation ="number") %>% 
+  ecriture_fichier(path_latex_mat_spp)
+write("\\clearpage", path_latex_mat_spp, append=TRUE)  
+
+
+#################################################################################
+
+
+
+
+
+write("\\end{document}", path_latex_mat_spp, append=TRUE)
 
 
 
