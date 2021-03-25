@@ -297,28 +297,33 @@ table_rename <- one_hot_fb(select_var$data_frame$df_analyse ,list_factor =  c(  
 # nb var model fin 
 
 
-print_var_at_diag <- str_remove_all(str_replace(
+print_var_at_diag <-   str_replace(str_replace(
+  str_replace(
+  str_remove_all(
+  str_replace(
   str_replace(
     str_replace(firstlow(table_rename$complete_table$Label[table_rename$complete_table$var_name %in% Var_model_outcome[str_detect(Var_model_outcome,
                                                                                                                                                       "^Vis_init_|^Mesure_unique_")]])
                                                 ,"epworth sleepiness scale","daytime sleepiness measured by ESS scale"),
                                                 "pichot's fatigue scale","fatigue measured by Pichot's scale" ),
                                                 "depression scale","depression  measured by Pichot's depression scale")
-                                    ,"diagnosis |\\(.+\\)")
+                                    ,"diagnosis" #|\\(.+\\)"
+  ),"\\(kg/m2\\)","(kg/m\textsuperscript{2})"),
+  "cervical circumference","cervical circumference (cm)"),# add into variables dictionnary instead
+"SaO2","SaO2 (\\\\%)")  # add into variables dictionnary instead
 
 
-str_replace(paste0("are the following variables at diagnosis : " , paste0(print_var_at_diag, collapse = ", ")),",(?=[^,]*$)", ' and')
+cat(str_replace(paste0("are the following variables at diagnosis : " , paste0(print_var_at_diag, collapse = ", ")),",(?=[^,]*$)", ' and'))
 
-str_replace(paste0("The variables under CPAP treatment : " , paste0(str_replace(
+cat(str_replace(paste0("The variables under CPAP treatment : " , paste0(str_replace(
   str_replace(
     str_replace(
-  str_remove_all(firstlow(table_rename$complete_table$Label[table_rename$complete_table$var_name %in% Var_model_outcome[!str_detect(Var_model_outcome,"^Vis_init_|^Mesure_unique_")]]),
-                                                                                   "\\(.+\\)"),
+  firstlow(table_rename$complete_table$Label[table_rename$complete_table$var_name %in% Var_model_outcome[!str_detect(Var_model_outcome,"^Vis_init_|^Mesure_unique_")]]) ,
   "pichot's fatigue scale","fatigue measured by Pichot's scale")
   ,"ADR","adverse drug reaction"),
   "depression scale","depression  measured by Pichot's depression scale")
                                                         , collapse = ", ")
-  ),",(?=[^,]*$)", ' and')
+  ),",(?=[^,]*$)", ' and'))
 
 
 
@@ -398,27 +403,9 @@ summarydescriptif_pds_boot  %>% select(exposition,ends_with("_W")) %>% rename(`A
         caption = "Distribution of weights"
   ) %>%
   kable_styling(latex_options =  c( "striped","HOLD_position", "scale_down","repeat_header"))%>%
-  add_footnote(c("Data are presented as mean (5th percentile; 95th percentile) of bootstrap iterations"),
+  add_footnote(c("Data are presented as mean (95% confidence interval) of bootstrap iterations"),
                notation ="symbol") %>% ecriture_fichier(path_latex)
 write("\\clearpage", path_latex, append=TRUE)  
-
-
-# troncature des poids 
-summarry_boot_strap_pds_trunc %>%
-  arrondie_df(1) %>% 
-  kable(format = "latex",
-        align = "c",
-        booktabs = TRUE,
-        escape = FALSE,
-        label = "weight_truncations",
-        linesep = "",
-        caption = "Weight truncations"
-  ) %>%
-  kable_styling(latex_options =  c( "striped","HOLD_position", "scale_down","repeat_header")) %>% 
-  add_footnote(c("Data are presented as mean ( 5th percentile; 95th percentile) of bootstrap iterations"),
-               notation ="symbol") %>% 
-  ecriture_fichier(path_latex)
-write("\\clearpage", path_latex, append=TRUE)     
 
 
 
@@ -516,12 +503,12 @@ df_box_plot_fig2 <- select_var$data_frame$df_analyse %>%
   rename_variables(var_instrum_name = var_instrumental_name)  %>% 
   .$table_rename %>% 
   select(`Adherence groups`,`Diagnosis epworth sleepiness scale`,`Epworth sleepiness scale`) %>% 
-  rename(  "epworth sleepiness scale at diagnosis" = "Diagnosis epworth sleepiness scale","epworth sleepiness scale at follow-up visit" = "Epworth sleepiness scale") %>% 
+  rename(  "Epworth sleepiness scale at diagnosis" = "Diagnosis epworth sleepiness scale","Epworth sleepiness scale at follow-up visit" = "Epworth sleepiness scale") %>% 
   pivot_longer(-`Adherence groups`) %>% 
   mutate(`Adherence groups` = as.factor(as.character(`Adherence groups`)),
          name = factor(name,levels = c(
-           "Epworth sleepiness score at diagnosis",
-           "Epworth sleepiness score at follow-up visit"))
+           "Epworth sleepiness scale at diagnosis",
+           "Epworth sleepiness scale at follow-up visit"))
          )  
 
 
@@ -599,7 +586,7 @@ write("\\end{document}", path_latex, append=TRUE)
 
 ################################################################################
 # Supplementary materials
-path_latex_mat_spp <- "figure_papier/table_mat_sup_iptw.tex"
+path_latex_mat_spp <- "figure_papier/matsup.tex"
 
 
 df_pre_imput <- readRDS("data/genere/data_pre_impute_nb_vis_2.rds")
@@ -614,14 +601,82 @@ diag_var_table_pre_impute_latex <- table_resume_pre_impute_rename$complete_table
 
 
 
+write(
+"
+\\documentclass{article}
+\\usepackage[utf8]{inputenc}
+\\usepackage{float}
+\\usepackage{gensymb}
+\\usepackage{graphicx}
+\\usepackage{lscape}
+\\usepackage{longtable}
+\\usepackage{booktabs}
+\\usepackage{colortbl, xcolor}
+\\usepackage{hyperref}
+\\usepackage{subfiles}
+\\usepackage{setspace}
+\\usepackage{sectsty}
+\\usepackage{geometry}
+\\usepackage{indentfirst}
+\\usepackage{amsmath,lipsum}
+\\newcommand{\\mypm}{\\mathbin{\\smash{%
+  \\raisebox{0.35ex}{%
+    $\\underset{\\raisebox{0.2ex}{$\\smash -$}}{\\smash+}$%
+  }%
+}%
+}%
+}
+
+\\usepackage{threeparttablex}
+\\usepackage{caption}                          
+\\DeclareCaptionLabelFormat{Sformat}{S#2 #1}    
+\\captionsetup[table]{labelformat=Sformat} 
+
+
+
+\\usepackage[superscript,biblabel]{cite}
+\\sectionfont{\\clearpage}
+\\doublespacing 
+
+\\title{Causal inference with multiple exposures: application of inverse-probability-of-treatment weighting to estimate the effect of daytime sleepiness in obstructive sleep apnea patients. \\\\
+  Supplementary Material}
+
+\\author{}
+\\date{}
+
+\\begin{document}
+
+\\maketitle
+
+\\subsection*{Author}
+François Bettega\\textsuperscript{1}, Clémence Leyrat\\textsuperscript{2}, Monique Mendelson\\textsuperscript{1}, Jean Louis Pépin\\textsuperscript{1}, Sébastien Bailly\\textsuperscript{1}
+\\subsection*{Affiliations}
+\\textsuperscript{1} HP2 Laboratory, INSERM U1042, University Grenoble Alpes, Grenoble, France 
+
+\\textsuperscript{2} Department of Medical Statistics, Inequalities in Cancer Outcomes Network, London School of Hygiene and Tropical Medicine, London, UK
+", path_latex_mat_spp, append=FALSE)
 
 
 
 
 
 
-write("\\documentclass[../matsup.tex]{subfiles}
-\\begin{document}", path_latex_mat_spp, append=FALSE)
+
+
+
+
+
+
+
+write("
+\\clearpage
+\\section*{Supplementary material 1 : Imputation}
+Variables contained at least one missing which needed to be imputed, table \\ref{tab:Table_number_of_na} summarized number of missing values by adherence group for each of those variables.
+
+We performed 10 imputed data sets using predictive mean matching as imputation method. After that we verified that the 10 imputed data sets were consistent with each other by looking at the distributions of the imputed variables in the different data sets.",
+      path_latex_mat_spp, append=TRUE) 
+
+
 
 # Table des NA 
 #  matériel supplémentaire 
@@ -696,6 +751,28 @@ write(end_landscape, path_latex_mat_spp, append=TRUE)
 
 write("\\clearpage", path_latex_mat_spp, append=TRUE)  
 
+
+
+
+##################################################################################
+
+# troncature des poids 
+summarry_boot_strap_pds_trunc %>%
+  arrondie_df(1) %>% 
+  kable(format = "latex",
+        align = "c",
+        booktabs = TRUE,
+        escape = FALSE,
+        label = "weight_truncations",
+        linesep = "",
+        caption = "Weight truncations"
+  ) %>%
+  kable_styling(latex_options =  c( "striped","HOLD_position", "scale_down","repeat_header")) %>% 
+  add_footnote(c("Data are presented as mean (95% confidence interval) of bootstrap iterations"),
+               notation ="symbol") %>% 
+  ecriture_fichier(path_latex_mat_spp)
+write("\\clearpage", path_latex_mat_spp, append = TRUE)     
+
 #################################################################################
 ## Weighting models coefficients
 
@@ -719,14 +796,15 @@ weight_coef_boot_CI_rename %>%
         align = "c",
         booktabs = TRUE,
         escape = FALSE,
-        longtable = TRUE,
+        #longtable = TRUE,
         label = "Wheight_coefficients",
         linesep = "",
-        caption = "Wheight coefficients"
+        caption = "Table caption \\label{tab:example}"#"Wheight coefficients"
   ) %>%
-  kable_styling(font_size = 7, latex_options =  c( "striped","HOLD_position", 
+  kable_styling(font_size = 7,
+    latex_options =  c( "striped","HOLD_position", 
                                                    "repeat_header")) %>% 
-  add_footnote(c("Data are presented as mean ( 5th percentile; 95th percentile) of bootstrap iterations"),
+  add_footnote(c("Data are presented as mean (95% confidence interval) of bootstrap iterations"),
                notation ="number") %>% 
   ecriture_fichier(path_latex_mat_spp)
 write("\\clearpage", path_latex_mat_spp, append=TRUE)  
@@ -734,11 +812,10 @@ write("\\clearpage", path_latex_mat_spp, append=TRUE)
 
 
 
+
+
 ##################################################################################
 ## IPWRA models coefficients
-
-
-
 IPWRA_coef_boot_CI_rename <- table_rename$complete_table %>% 
   select(var_name,Label)  %>% 
   right_join(IPWRA_coef_boot_CI %>% 
@@ -769,16 +846,18 @@ kable(format = "latex",
       linesep = "",
       caption = "IPWRA coefficients"
 ) %>%
-  kable_styling(font_size = 7, latex_options =  c( "striped","HOLD_position", 
+  kable_styling(font_size = 6, latex_options =  c( "striped","HOLD_position", 
                                     #"scale_down",
                                     "repeat_header")) %>% 
-  add_footnote(c("Data are presented as mean ( 5th percentile; 95th percentile) of bootstrap iterations"),
-               notation ="number") %>% 
+  # add_footnote(c("Data are presented as mean (95% confidence interval) of bootstrap iterations"),
+  #              notation ="number") %>% 
+  footnote(symbol = "Data are presented as mean (95% confidence interval) of bootstrap iterations") %>% 
   ecriture_fichier(path_latex_mat_spp)
 write("\\clearpage", path_latex_mat_spp, append=TRUE)  
 
 
 #################################################################################
+
 
 
 
