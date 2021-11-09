@@ -8,8 +8,7 @@ library(kableExtra)
 source("Source_papier_prett.R",
        encoding = "UTF-8")
 # var 
-
-Id <- "id_patient"
+Id <- paste0(quote(id_patient)) # change from recently if bug here "id_patient"
 name_expo <- paste0(quote(INS_obs_categ))
 name_outcome <- paste0(quote(SYM_echelleEpworth))
 visite_seuil <- 2
@@ -179,7 +178,29 @@ boot_strap_coef_reg_non_pond <- apply(boot_strap_full_process,2,function(x){
 }) %>% bind_rows() 
 
 
+for (i in 1:3){
+print(c(
+mean(boot_strap_coef_reg_non_pond %>% filter(key == "IPTW") %>%
+select(contains(as.character(i))) %>% unlist(use.names = FALSE))-
+mean(boot_strap_coef_reg_non_pond %>% filter(key == "reg_pond") %>%
+select(contains(as.character(i))) %>% unlist(use.names = FALSE))
+))
+}
 
+t_test_diff_ess_bygroup_iptw_piwra <- sapply(1:3, function(i){
+  
+t.test(
+boot_strap_coef_reg_non_pond %>% filter(key == "IPTW") %>%
+select(contains(as.character(i))) %>% unlist(use.names = FALSE),
+boot_strap_coef_reg_non_pond %>% filter(key == "reg_pond") %>%
+select(contains(as.character(i))) %>% unlist(use.names = FALSE)
+)
+  
+})
+
+
+
+df_4meth %>% filter(key == "IPTW"|key =="IPWRA") %>% mutate(ci = paste0("(",round(ci_inf,2),"; ",round(ci_sup,2),")"),moy = round(moy,2)) %>% select(-ci_sup ,- ci_inf )%>% pivot_wider(names_from = key,values_from = c(moy,ci))
 
 
 df_4meth <- boot_strap_coef_reg_non_pond %>% pivot_longer(-key) %>% group_by(key,name) %>% summarise(moy = mean(value),ci_sup = quantile(value,0.975),ci_inf = quantile(value,0.025) ,.groups = "drop") %>%
@@ -309,7 +330,7 @@ print_var_at_diag <-   str_replace(str_replace(
                                                 "depression scale","depression  measured by Pichot's depression scale")
                                     ,"diagnosis" #|\\(.+\\)"
   ),"\\(kg/m2\\)","(kg/m\textsuperscript{2})"),
-  "cervical circumference","cervical circumference (cm)"),# add into variables dictionnary instead
+  "neck circumference","neck circumference (cm)"),# add into variables dictionnary instead
 "SaO2","SaO2 (\\\\%)")  # add into variables dictionnary instead
 
 
@@ -362,6 +383,8 @@ round(mean(select_var$data_frame$df_analyse $Vis_init_INS_IAH >= 30) * 100,1)
 # Final result 
 df_4meth %>% mutate(ci = paste0("(",round(ci_inf,2),"; ",round(ci_sup,2),")"),moy = round(moy,2)) %>% select(-ci_sup ,- ci_inf )%>% pivot_wider(names_from = key,values_from = c(moy,ci))
 
+
+
 # Anova of initial epworth scale  
 Init_ESS_mean_comp <- aov(Vis_init_SYM_echelleEpworth~INS_obs_categ,donnee_boot)
 summary(Init_ESS_mean_comp)
@@ -374,6 +397,36 @@ summary(Folow_ESS_mean_comp)
 # mean initial obs for all patients
 obs_nume <- read_rds("data/genere/obs_quantit2.rds")
 obs_nume %>% inner_join(donnee_boot,by = Id) %>% summarise(roud_hour(mean(PPC_observanceMoy_finale))) 
+
+
+# pval diff obs pond
+
+
+table_col <- combn(ESS_test_by_group_AIPW %>% select(-key) %>% colnames(),2)
+
+
+mini_test_fun <- function(df,table_col){
+  
+  unslit_fb <- function(Y) unlist(Y,use.names = FALSE)
+  
+  apply(table_col,2,function(x)
+    t.test(unslit_fb(df[x[1]]),unslit_fb(df[x[2]]))
+    )
+}
+
+
+
+
+ESS_test_by_group_AIPW <- boot_strap_coef_reg_non_pond %>% 
+  filter(key == "reg_pond")
+ESS_test_by_group_IPWT <- boot_strap_coef_reg_non_pond %>% 
+  filter(key == "IPTW")
+
+mini_test_fun(ESS_test_by_group_AIPW,table_col)
+
+
+mini_test_fun(ESS_test_by_group_IPWT,table_col)
+
 
 
 ##################################################################################
@@ -402,9 +455,9 @@ summarydescriptif_pds_boot  %>% select(exposition,ends_with("_W")) %>% rename(`A
         linesep = "",
         caption = "Distribution of weights"
   ) %>%
-  kable_styling(latex_options =  c( "striped","HOLD_position", "scale_down","repeat_header"))%>%
-  add_footnote(c("Data are presented as mean (95% confidence interval) of bootstrap iterations"),
-               notation ="symbol") %>% ecriture_fichier(path_latex)
+  kable_styling(latex_options =  c( "striped","HOLD_position", "scale_down","repeat_header")) %>%
+  footnote(general  = c("Data are presented as mean (95% confidence interval) of bootstrap iterations"), general_title = "") %>%  
+  ecriture_fichier(path_latex)
 write("\\clearpage", path_latex, append=TRUE)  
 
 
@@ -470,7 +523,7 @@ table_resume_rapport_latex_ss_escape_order %>%
         label = "Table_resume_pop",
         linesep = "",
         col.names = c("",colnames(table_resume_rapport_latex_ss_escape_order)[c(-1,-ncol(table_resume_rapport_latex_ss_escape_order))]) ,
-        caption = "Table of variables for each adherence group"
+        caption = "Patient characteristics according to the adherence group"
   ) %>%
   add_header_above(c("","All groups",paste0(groupe_obs_table_latex ," (",seq_along(groupe_obs_table_latex),")" )),
                          line = FALSE) %>%
@@ -482,20 +535,22 @@ table_resume_rapport_latex_ss_escape_order %>%
   kable_styling(latex_options =  c( "striped","HOLD_position",
                                     "repeat_header"),
   ) %>%
-  add_footnote(c("Quantitative variables are presented as mean (standard deviation). Qualitative variables are expressed in number of individuals (% of individuals) ",
-                 "t-test was performed for the quantitative variables and a Pearson's Chi squared test for the categorical variables after application of a Bonferroni correction for multiple testing.",
-                 "1,2,3,4 numbers in subscript refers to columns statistically different at the 5% threshold. e.g. 1 means that there is a statistically significant difference between the 0-4h adherence group and the 0-4h adherence group (1) for the variable in question.",
-                 "ESS : Epworth Sleepiness Scale",
-                 foot_note_var_presence
-                 
-                 #"* after index corresponding to variables with too few people to perform test"
-  ),threeparttable= TRUE,
-  notation ="symbol") %>% 
+  footnote(general  = c(paste0(c("ESS : Epworth Sleepiness Scale", foot_note_var_presence),collapse = "; ")), general_title = "",
+           symbol =c("Quantitative variables are presented as mean (standard deviation). Qualitative variables are expressed in number of individuals (% of individuals) ",
+                     "t-test was performed for the quantitative variables and a Pearson's Chi squared test for the categorical variables after application of a Bonferroni correction for multiple testing.",
+                     "1,2,3,4 numbers in subscript refers to columns statistically different at the 5% threshold. e.g. 1 means that there is a statistically significant difference between the 0-4h adherence group and the 0-4h adherence group (1) for the variable in question."
+                     #"* after index corresponding to variables with too few people to perform test"
+           ),
+           threeparttable = TRUE) %>% 
+  
+  
   landscape() %>% 
   ecriture_fichier(path_latex)
 end_landscape <- "\\restoregeometry % Restore the global document page margins"
 write(end_landscape, path_latex, append=TRUE)
 write("\\clearpage", path_latex, append=TRUE)  
+
+
 
 
 
@@ -520,7 +575,7 @@ ggplot(data = df_box_plot_fig2,
   labs(y = "Epworth sleepiness score",
        x = paste0(""),
        fill = "CPAP adherence") 
-ggsave("figure_papier/figure_2.jpeg",
+ggsave("figure_papier/figure_3.jpeg",
        width = 8,
        height = 8,
        units = c("in"))
@@ -558,7 +613,7 @@ ggplot(data = df_plot_max,
   ggplot2::labs(title = "",y = "SMD",
                 x = "") 
 
-ggsave("figure_papier/figure_3.jpeg",
+ggsave("figure_papier/figure_4.jpeg",
        width = 8,
        height = 8,
        units = c("in"))
@@ -566,15 +621,32 @@ ggsave("figure_papier/figure_3.jpeg",
 
 
 pd <- position_dodge(0.1) # move them .05 to the left and right
-ggplot(df_4meth %>% mutate(name = groupe_obs_table_latex[as.numeric(name)]) ,
+
+df_figure_5 <- df_4meth %>% 
+  filter(key != "Unweighted linear regression") %>% 
+  mutate(name = groupe_obs_table_latex[as.numeric(name)]) %>%
+  mutate(key = recode_factor(key, "Unweighted mean comparaison" = "Unweighted"))
+
+
+
+
+ggplot(df_figure_5  ,
        aes(x=name,y = moy )) + 
   geom_errorbar(aes(ymin=ci_inf , ymax=ci_sup ), colour="black", width=.1, position=pd ) +
-  geom_point(position=pd , size=3) + facet_wrap(~ key) +
-  labs(x = "Adherence groups",y = "Change in Epworth score")+
-  theme(strip.text  = element_text(size = 12 , face = "bold" ))
-ggsave("figure_papier/figure_4.jpeg",
-       width = 8,
-       height = 8,
+  geom_point(position=pd , size=3) + 
+  facet_wrap(~ key) +
+  labs(x = "Adherence groups",y = "Change in Epworth score") +
+  theme(strip.text  = element_text(size = 12 , 
+          face = "bold") #,
+        #text = element_text(size = 20) 
+        )
+
+
+
+
+ggsave("figure_papier/figure_5.jpeg",
+       width = 12,
+       height = 12,
        units = c("in"))
 
 
@@ -648,12 +720,8 @@ write(
 
 \\maketitle
 
-\\subsection*{Author}
-François Bettega\\textsuperscript{1}, Clémence Leyrat\\textsuperscript{2}, Monique Mendelson\\textsuperscript{1}, Jean Louis Pépin\\textsuperscript{1}, Sébastien Bailly\\textsuperscript{1}
-\\subsection*{Affiliations}
-\\textsuperscript{1} HP2 Laboratory, INSERM U1042, University Grenoble Alpes, Grenoble, France 
+\\subfile{authors}
 
-\\textsuperscript{2} Department of Medical Statistics, Inequalities in Cancer Outcomes Network, London School of Hygiene and Tropical Medicine, London, UK
 ", path_latex_mat_spp, append=FALSE)
 
 
@@ -739,11 +807,7 @@ df_latex_number_of_NA_order %>%
   kable_styling(latex_options = c( "striped","HOLD_position", 
                                    #"scale_down",
                                    "repeat_header")) %>%
-  add_footnote(c("ESS : Epworth Sleepiness Scale",
-                 "CPAP : Continuous Positive Airway Pressure"
-    
-  ),threeparttable= TRUE,
-  notation ="symbol") %>% 
+  footnote(general  = c("ESS : Epworth Sleepiness Scale; CPAP : Continuous Positive Airway Pressure"), general_title = "",threeparttable =TRUE) %>% 
   landscape() %>% 
   ecriture_fichier(path_latex_mat_spp)
 #write("\\clearpage", path_latex_mat_spp, append=TRUE) 
@@ -768,8 +832,7 @@ summarry_boot_strap_pds_trunc %>%
         caption = "Weight truncations"
   ) %>%
   kable_styling(latex_options =  c( "striped","HOLD_position", "scale_down","repeat_header")) %>% 
-  add_footnote(c("Data are presented as mean (95% confidence interval) of bootstrap iterations"),
-               notation ="symbol") %>% 
+  footnote(general  = c("Data are presented as mean (95% confidence interval) of bootstrap iterations"), general_title = "") %>% 
   ecriture_fichier(path_latex_mat_spp)
 write("\\clearpage", path_latex_mat_spp, append = TRUE)     
 
@@ -791,7 +854,7 @@ weight_coef_boot_CI_rename %>%
   mutate(coef = paste0(sprintf("%.03f",moy) , "(",sprintf("%.03f",ci_inf),"; ",sprintf("%.03f",ci_sup), ")")) %>% 
   select(Label,rowname,coef) %>% 
   pivot_wider(names_from = rowname, names_sep = ".",values_from = coef) %>% 
-  rename_all(~c("Variables", paste0("Coeficients of " ,groupe_obs_table_latex[-1], " group"))) %>% 
+  rename_all(~c("Variables", paste0("Coefficients of " ,groupe_obs_table_latex[-1], " group"))) %>% 
   kable(format = "latex",
         align = "c",
         booktabs = TRUE,
@@ -799,16 +862,15 @@ weight_coef_boot_CI_rename %>%
         #longtable = TRUE,
         label = "Wheight_coefficients",
         linesep = "",
-        caption = "Table caption \\label{tab:example}"#"Wheight coefficients"
+        caption = "IPWRA weight model coefficient to assess the probability of being in an adherence group"
   ) %>%
   kable_styling(font_size = 7,
     latex_options =  c( "striped","HOLD_position", 
                                                    "repeat_header")) %>% 
-  add_footnote(c("Data are presented as mean (95% confidence interval) of bootstrap iterations"),
-               notation ="number") %>% 
+  footnote(general  = c("Data are presented as mean (95% confidence interval) of bootstrap iterations",paste0(c("ESS : Epworth Sleepiness Scale", foot_note_var_presence),collapse = "; "))
+           , general_title = "") %>% 
   ecriture_fichier(path_latex_mat_spp)
 write("\\clearpage", path_latex_mat_spp, append=TRUE)  
-
 
 
 
@@ -844,14 +906,13 @@ kable(format = "latex",
       longtable = TRUE,
       label = "IPWRA_coefficients",
       linesep = "",
-      caption = "IPWRA coefficients"
+      caption = "Multivariable weighted linear regression to assess the impact of CPAP adherence group on ESS under CPAP"
 ) %>%
   kable_styling(font_size = 6, latex_options =  c( "striped","HOLD_position", 
                                     #"scale_down",
                                     "repeat_header")) %>% 
-  # add_footnote(c("Data are presented as mean (95% confidence interval) of bootstrap iterations"),
-  #              notation ="number") %>% 
-  footnote(symbol = "Data are presented as mean (95% confidence interval) of bootstrap iterations") %>% 
+  footnote(general  = c("Data are presented as mean (95% confidence interval) of bootstrap iterations",paste0(c("ESS : Epworth Sleepiness Scale", foot_note_var_presence),collapse = "; "))
+           , general_title = "") %>% 
   ecriture_fichier(path_latex_mat_spp)
 write("\\clearpage", path_latex_mat_spp, append=TRUE)  
 

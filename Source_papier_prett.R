@@ -422,7 +422,8 @@ rename_variables <- function(table_func, var_instrum_name = NULL, path_to_var_la
   # récup fichier avec les noms 
   label_var <- readxl::read_excel(path_to_var_lab) %>% select(Variable,Label) %>% 
    mutate(Label =   unlist(lapply(strsplit(Label, " "),function(x) 
-   paste0(ifelse(str_count(x,"[A-Z]") == 1,firstlow(x),x),collapse = " "))))
+   paste0(ifelse(str_count(x,"[A-Z]") == 1,firstlow(x),x),collapse = " ")))) %>% 
+    mutate(Label = str_replace(Label,"cervical circumference","neck circumference"))
 
 
   
@@ -594,6 +595,8 @@ table_resume_latex <- function(df_one_hot_encode_fonc,name_expo_fonc,nom_grp = "
         t.df %>% 
         rename_at("col_1",list( ~paste0(x[1],"_",x[2])))
     )
+    
+    
     if (length(boolean_var) != 0){
       combin_chisq_pval <- apply(combin_grp, 2, function(x)
         df_pval %>%

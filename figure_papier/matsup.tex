@@ -44,12 +44,8 @@
 
 \maketitle
 
-\subsection*{Author}
-François Bettega\textsuperscript{1}, Clémence Leyrat\textsuperscript{2}, Monique Mendelson\textsuperscript{1}, Jean Louis Pépin\textsuperscript{1}, Sébastien Bailly\textsuperscript{1}
-\subsection*{Affiliations}
-\textsuperscript{1} HP2 Laboratory, INSERM U1042, University Grenoble Alpes, Grenoble, France 
+\subfile{authors}
 
-\textsuperscript{2} Department of Medical Statistics, Inequalities in Cancer Outcomes Network, London School of Hygiene and Tropical Medicine, London, UK
 
 
 \clearpage
@@ -61,9 +57,9 @@ We performed 10 imputed data sets using predictive mean matching as imputation m
 
 \begin{landscape}\begin{table}[H]
 
-\begin{threeparttable}
 \caption{\label{tab:Table_number_of_na}Number of missing value by variables and group}
 \centering
+\begin{threeparttable}
 \begin{tabular}[t]{cccccc}
 \toprule
 \multicolumn{1}{c}{} & \multicolumn{1}{c}{All groups} & \multicolumn{1}{c}{0-4 h (1)} & \multicolumn{1}{c}{4-6 h (2)} & \multicolumn{1}{c}{6-7 h (3)} & \multicolumn{1}{c}{7-10 h (4)} \\
@@ -72,7 +68,7 @@ We performed 10 imputed data sets using predictive mean matching as imputation m
 \addlinespace[0.3em]
 \multicolumn{6}{l}{\textbf{Variables at diagnosis }}\\
 \cellcolor{gray!6}{\hspace{1em}Body mass index (kg/m2)} & \cellcolor{gray!6}{118 (1.0\%)} & \cellcolor{gray!6}{30 (1.2\%)} & \cellcolor{gray!6}{46 (1.0\%)} & \cellcolor{gray!6}{22 (0.9\%)} & \cellcolor{gray!6}{20 (0.9\%)}\\
-\hspace{1em}Cervical circumference & 4,148 (35.9\%) & 870 (35.2\%) & 1,535 (34.9\%) & 937 (37.1\%) & 806 (37.4\%)\\
+\hspace{1em}Neck circumference & 4,148 (35.9\%) & 870 (35.2\%) & 1,535 (34.9\%) & 937 (37.1\%) & 806 (37.4\%)\\
 \cellcolor{gray!6}{\hspace{1em}Tobacco status} & \cellcolor{gray!6}{30 (0.3\%)} & \cellcolor{gray!6}{5 (0.2\%)} & \cellcolor{gray!6}{15 (0.3\%)} & \cellcolor{gray!6}{7 (0.3\%)} & \cellcolor{gray!6}{3 (0.1\%)}\\
 \hspace{1em}Nocturia & 44 (0.4\%) & 9 (0.4\%) & 14 (0.3\%) & 15 (0.6\%) & 6 (0.3\%)\\
 \cellcolor{gray!6}{\hspace{1em}Respiratory arrests} & \cellcolor{gray!6}{425 (3.7\%)} & \cellcolor{gray!6}{94 (3.8\%)} & \cellcolor{gray!6}{148 (3.4\%)} & \cellcolor{gray!6}{98 (3.9\%)} & \cellcolor{gray!6}{85 (3.9\%)}\\
@@ -95,9 +91,7 @@ We performed 10 imputed data sets using predictive mean matching as imputation m
 \bottomrule
 \end{tabular}
 \begin{tablenotes}
-\small
-\item [*] ESS : Epworth Sleepiness Scale
-\item [\dag] CPAP : Continuous Positive Airway Pressure
+\item ESS : Epworth Sleepiness Scale; CPAP : Continuous Positive Airway Pressure
 \end{tablenotes}
 \end{threeparttable}
 \end{table}
@@ -120,22 +114,22 @@ Truncations & Mean & Minimum & Maximum\\
 \cellcolor{gray!6}{(0.25; 0.75)} & \cellcolor{gray!6}{3.6(3.6; 3.6)} & \cellcolor{gray!6}{2.6(2.5; 2.7)} & \cellcolor{gray!6}{4.7(4.7; 4.8)}\\
 (0.5; 0.5) & 3.4(3.4; 3.5) & 3.4(3.4; 3.5) & 3.4(3.4; 3.5)\\
 \bottomrule
-\multicolumn{4}{l}{\textsuperscript{*} Data are presented as mean (95\% confidence interval) of bootstrap iterations}\\
+\multicolumn{4}{l}{\rule{0pt}{1em}Data are presented as mean (95\% confidence interval) of bootstrap iterations}\\
 \end{tabular}}
 \end{table}
 \clearpage
 \begin{table}[H]
 
-\caption{\label{tab:Wheight_coefficients}Table caption \label{tab:example}}
+\caption{\label{tab:Wheight_coefficients}IPWRA weight model coefficient to assess the probability of being in an adherence group}
 \centering
 \fontsize{7}{9}\selectfont
 \begin{tabular}[t]{cccc}
 \toprule
-Variables & Coeficients of 4-6 h group & Coeficients of 6-7 h group & Coeficients of 7-10 h group\\
+Variables & Coefficients of 4-6 h group & Coefficients of 6-7 h group & Coefficients of 7-10 h group\\
 \midrule
 \cellcolor{gray!6}{Diagnosis age (years)} & \cellcolor{gray!6}{0.011(0.006; 0.016)} & \cellcolor{gray!6}{0.022(0.017; 0.028)} & \cellcolor{gray!6}{0.029(0.023; 0.035)}\\
 Diagnosis body mass index (kg/m2) & -0.003(-0.014; 0.007) & -0.007(-0.020; 0.005) & -0.002(-0.013; 0.009)\\
-\cellcolor{gray!6}{Diagnosis cervical circumference} & \cellcolor{gray!6}{0.003(-0.014; 0.021)} & \cellcolor{gray!6}{0.024(0.005; 0.044)} & \cellcolor{gray!6}{0.027(0.008; 0.048)}\\
+\cellcolor{gray!6}{Diagnosis neck circumference} & \cellcolor{gray!6}{0.003(-0.014; 0.021)} & \cellcolor{gray!6}{0.024(0.005; 0.044)} & \cellcolor{gray!6}{0.027(0.008; 0.048)}\\
 Diagnosis sleepiness at the wheel & 0.210(0.077; 0.334) & 0.135(-0.012; 0.289) & -0.003(-0.153; 0.150)\\
 \cellcolor{gray!6}{Diagnosis morning tiredness} & \cellcolor{gray!6}{0.049(-0.101; 0.202)} & \cellcolor{gray!6}{0.010(-0.160; 0.174)} & \cellcolor{gray!6}{0.119(-0.062; 0.297)}\\
 Diagnosis morning headaches & 0.010(-0.142; 0.155) & 0.096(-0.080; 0.260) & 0.031(-0.158; 0.201)\\
@@ -162,19 +156,20 @@ Pichot's fatigue scale & -0.034(-0.044; -0.024) & -0.057(-0.070; -0.045) & -0.03
 \cellcolor{gray!6}{Average pressure of CPAP} & \cellcolor{gray!6}{0.055(0.030; 0.081)} & \cellcolor{gray!6}{0.076(0.048; 0.105)} & \cellcolor{gray!6}{0.116(0.085; 0.144)}\\
 Number of ADR types under CPAP & -0.263(-0.312; -0.215) & -0.343(-0.404; -0.276) & -0.374(-0.447; -0.307)\\
 \bottomrule
-\multicolumn{4}{l}{\textsuperscript{1} Data are presented as mean (95\% confidence interval) of bootstrap iterations}\\
+\multicolumn{4}{l}{\rule{0pt}{1em}Data are presented as mean (95\% confidence interval) of bootstrap iterations}\\
+\multicolumn{4}{l}{\rule{0pt}{1em}ESS : Epworth Sleepiness Scale; CPAP : Continuous Positive Airway Pressure; ADR : adverse drug reaction}\\
 \end{tabular}
 \end{table}
 \clearpage
 \begingroup\fontsize{6}{8}\selectfont
 
 \begin{longtable}[t]{cc}
-\caption{\label{tab:IPWRA_coefficients}IPWRA coefficients}\\
+\caption{\label{tab:IPWRA_coefficients}Multivariable weighted linear regression to assess the impact of CPAP adherence group on ESS under CPAP}\\
 \toprule
 Label & Model coefficients\\
 \midrule
 \endfirsthead
-\caption[]{IPWRA coefficients \textit{(continued)}}\\
+\caption[]{Multivariable weighted linear regression to assess the impact of CPAP adherence group on ESS under CPAP \textit{(continued)}}\\
 \toprule
 Label & Model coefficients\\
 \midrule
@@ -182,11 +177,12 @@ Label & Model coefficients\\
 
 \endfoot
 \bottomrule
-\multicolumn{2}{l}{\rule{0pt}{1em}\textsuperscript{*} Data are presented as mean (95\% confidence interval) of bootstrap iterations}\\
+\multicolumn{2}{l}{\rule{0pt}{1em}Data are presented as mean (95\% confidence interval) of bootstrap iterations}\\
+\multicolumn{2}{l}{\rule{0pt}{1em}ESS : Epworth Sleepiness Scale; CPAP : Continuous Positive Airway Pressure; ADR : adverse drug reaction}\\
 \endlastfoot
 \cellcolor{gray!6}{Diagnosis age (years)} & \cellcolor{gray!6}{-0.022(-0.029; -0.016)}\\
 Diagnosis body mass index (kg/m2) & -0.022(-0.035; -0.010)\\
-\cellcolor{gray!6}{Diagnosis cervical circumference} & \cellcolor{gray!6}{0.016(-0.003; 0.037)}\\
+\cellcolor{gray!6}{Diagnosis neck circumference} & \cellcolor{gray!6}{0.016(-0.003; 0.037)}\\
 Diagnosis tobacco status 1 & 0.095(-0.064; 0.256)\\
 \cellcolor{gray!6}{Diagnosis tobacco status 2} & \cellcolor{gray!6}{-0.157(-0.381; 0.072)}\\
 Diagnosis sleepiness at the wheel & 0.234(0.067; 0.406)\\
