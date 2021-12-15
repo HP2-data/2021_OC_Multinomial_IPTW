@@ -123,7 +123,8 @@ boot_strap_pds_trunc <- lapply(boot_strap_full_process[6,],function(x){
     pivot_wider(names_from = fun ,
                 values_from = col_1)  %>% 
     rename_all(function(x) c("Truncations","Mean","Minimum","Maximum"))
-}) %>% bind_rows() 
+}) %>%
+  bind_rows() 
 summarry_boot_strap_pds_trunc <- boot_strap_pds_trunc %>% 
   mutate(Truncations=factor(Truncations,
                             levels = c("(0; 1)",
@@ -172,7 +173,13 @@ boot_strap_coef_reg_non_pond <- apply(boot_strap_full_process,2,function(x){
         x[3]$reg_pond %>% as.data.frame() %>% rename("value" = 1) %>% rownames_to_column() %>% filter(str_detect(rowname,"INS_obs_categ")) %>% t.df(pivot = "rowname") %>% mutate(key = "reg_non_pond"),
         
         df_diff_simple %>% mutate(weight = weight_fun ) %>% 
-          group_by(INS_obs_categ) %>% summarise(normal_mean = mean(SYM_echelleEpworth), IPTW = weighted.mean(x = SYM_echelleEpworth, w = weight)) %>% t.df("INS_obs_categ") %>% mutate_at(vars(-key),~(. - `4`)) %>% select(-`4`) %>% rename_at(vars(-key),~paste0("INS_obs_categ",.))
+          group_by(INS_obs_categ) %>%
+          summarise(normal_mean = mean(SYM_echelleEpworth), 
+                    IPTW = weighted.mean(x = SYM_echelleEpworth, w = weight)) %>% 
+          t.df("INS_obs_categ") %>%
+          mutate_at(vars(-key),~(. - `4`)) %>% 
+          select(-`4`) %>% 
+          rename_at(vars(-key),~paste0("INS_obs_categ",.))
   )
   
 }) %>% bind_rows() 
