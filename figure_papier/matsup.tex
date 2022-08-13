@@ -49,53 +49,41 @@
 
 
 \clearpage
-\section*{Supplementary material 1 : Imputation}
+\section*{Supplementary material 1 : Additional analysis of causal effect of CPAP adherence with morning fatigue as outcomes}
+An additional analysis was performed with morning fatigue as outcome and compliance as exposure.
+This analysis was performed on all patients with no missing values for outcome, baseline outcome and exposure (n = 4833).
+Morning fatigue is rated on a scale between 0 and 10 by patients.
+
+The results are presented as the difference in morning fatigue scale compared to the most adherent group (7-10h) with 95\% CI. IPTW : 0-4h : 0.59 (0.43; 0.75), 4-6h: 0.23 (0.08; 0.37) and 6-7h:  0.00 (-0.17; 0.18), IPWRA: 0-4h : 0.59 (0.43; 0.73), 4-6h: 0.23 (0.08; 0.37) and 6-7h:  0.04 (-0.12; 0.2), Multivariable regression: 0-4h : 0.59 (0.44; 0.74), 4-6h: 0.23 (0.09; 0.37) and 6-7h:  0.03 (-0.13; 0.21) and Unadjusted mean comparison: 0-4h : 0.63 (0.43; 0.83), 4-6h: 0.4 (-0.14; 0.24) and 6-7h:  -0.22 (-0.41; -0.02). The results are consistent with those of the Epworth.
+
+
+\clearpage
+\section*{Supplementary material 2 : Directed acyclic graph}
+To construct the current DAG, we used existing knowledge from different original data publication and systematic reviews of expert consensus papers.
+We assumed that gender (sex) \cite{pepinCPAPTherapyTermination2021a}, body mass index (BMI), OSA severity \cite{stepnowskyDoseresponseRelationshipCPAP2002} and age \cite{sabilCPAPDatabasedAlgorithm2021} have a direct causal effect on CPAP-adherence.
+This was reported from the analysis of a large cohort study including half a million participants. 
+There are mechanisms explaining direct causal links between age, gender and BMI and cardiovascular and metabolic comorbidities.
+Obesity has an impact on OSA severity but is per se a major determinant for the occurrence of comorbidities.
+Some specific comorbidities such as cardiac failure\cite{levySleepApnoeaHeart2021}, hypertension or stroke \cite{brownOvernightRostralFluid2021} can induce rostral fluid shift during night that exacerbate or originate sleep apnea \cite{javaheriSleepApneaTypes2017}.
+Some of these comorbidities impact daytime sleepiness with a "protective effect" for heart failure\cite{arztSleepinessSleepPatients2006} or favoring daytime hypersomnia like obesity or diabetes.
+This is true both at baseline and under CPAP\cite{koutsourelakisPredictorsResidualSleepiness2009}.
+There is a weak link between OSA severity and daytime sleepiness\cite{bonsignoreExcessiveDaytimeSleepiness2021,mitraAssociationRiskFactors2021}.
+High OSA severity as baseline is a predictive factor for residual sleepiness  under CPAP \cite{thorarinsdottirDifferentComponentsExcessive2021}.
+Age and BMI are directly associated with OSA severity as it was shown in several publications using clustering approaches and there are distinct evolutions of symptoms from baseline under treatment according to age and gender \cite{baillyClustersSleepApnoea2021,gagnadouxRelationshipOSAClinical2016a,baillyObstructiveSleepApnea2016,holfingerDiagnosticPerformanceMachine2021}.
+Finally, severity of symptoms at baseline is a good predictor for residual daytime sleepiness under CPAP\cite{gasaResidualSleepinessSleep2013a,bonsignoreExcessiveDaytimeSleepiness2021,koutsourelakisPredictorsResidualSleepiness2009}.
+Unmeasured confounders merit to be considered when assessing the link between CPAP adherence and OSAS severity: socio- economic status (SAS) with impact of deprivation index which has been shown associated to a lower CPAP adherence\cite{daabekImpactHealthcareNonTakeUp2021,wickwireLowerSocioeconomicStatus2020,palmSocioeconomicFactorsAdherence2021}, racial disparities \cite{borkerNeighborhoodsGreaterPrevalence2021}, intimal context such as spousal involvement\cite{gentinaMaritalQualityPartner2019,mendelsonMultidimensionalEvaluationContinuous2020}, health literacy \cite{bakkerEthnicDisparitiesCPAP2011} or personal perception of treatment efficacy \cite{borriboonContinuousPositiveAirway2021}.
+Environmental factors like pollution or temperature can impact also both CPAP adherence or OSAS severity \cite{staatsImpactTemperatureObstructive2021,rapelliImprovingCPAPAdherence2021}. 
+Finally, medication can both impact CPAP adherence and daytime sleepiness \cite{revolSevereExcessiveDaytime2017}. 
+However, these variables do not need to be included in the minimal adjustment set for the estimation of the causal effect of CPAP adherence on daytime sleepiness.
+Indeed, by applying d-separation rules to this DAG, age, sex, comorbidities, BMI, OSAS severity were identified as the confounders to adjust for in our analysis to assess causal effect.
+
+
+\clearpage
+\section*{Supplementary material 3 : Imputation}
 Variables contained at least one missing which needed to be imputed, table \ref{tab:Table_number_of_na} summarized number of missing values by adherence group for each of those variables.
 
 We performed 10 imputed data sets using predictive mean matching as imputation method. After that we verified that the 10 imputed data sets were consistent with each other by looking at the distributions of the imputed variables in the different data sets.
 \newgeometry{a4paper,left=1in,right=1in,top=1in,bottom=1in,nohead}
-
-\begin{landscape}\begin{table}[H]
-
-\caption{\label{tab:Table_number_of_na}Number of missing value by variables and group}
-\centering
-\begin{threeparttable}
-\begin{tabular}[t]{cccccc}
-\toprule
-\multicolumn{1}{c}{} & \multicolumn{1}{c}{All groups} & \multicolumn{1}{c}{0-4 h (1)} & \multicolumn{1}{c}{4-6 h (2)} & \multicolumn{1}{c}{6-7 h (3)} & \multicolumn{1}{c}{7-10 h (4)} \\
- & 11553 & 2471 & 4398 & 2528 & 2156\\
-\midrule
-\addlinespace[0.3em]
-\multicolumn{6}{l}{\textbf{Variables at diagnosis }}\\
-\cellcolor{gray!6}{\hspace{1em}Body mass index (kg/m2)} & \cellcolor{gray!6}{118 (1.0\%)} & \cellcolor{gray!6}{30 (1.2\%)} & \cellcolor{gray!6}{46 (1.0\%)} & \cellcolor{gray!6}{22 (0.9\%)} & \cellcolor{gray!6}{20 (0.9\%)}\\
-\hspace{1em}Neck circumference & 4,148 (35.9\%) & 870 (35.2\%) & 1,535 (34.9\%) & 937 (37.1\%) & 806 (37.4\%)\\
-\cellcolor{gray!6}{\hspace{1em}Tobacco status} & \cellcolor{gray!6}{30 (0.3\%)} & \cellcolor{gray!6}{5 (0.2\%)} & \cellcolor{gray!6}{15 (0.3\%)} & \cellcolor{gray!6}{7 (0.3\%)} & \cellcolor{gray!6}{3 (0.1\%)}\\
-\hspace{1em}Nocturia & 44 (0.4\%) & 9 (0.4\%) & 14 (0.3\%) & 15 (0.6\%) & 6 (0.3\%)\\
-\cellcolor{gray!6}{\hspace{1em}Respiratory arrests} & \cellcolor{gray!6}{425 (3.7\%)} & \cellcolor{gray!6}{94 (3.8\%)} & \cellcolor{gray!6}{148 (3.4\%)} & \cellcolor{gray!6}{98 (3.9\%)} & \cellcolor{gray!6}{85 (3.9\%)}\\
-\hspace{1em}Pichot's fatigue scale & 941 (8.1\%) & 141 (5.7\%) & 365 (8.3\%) & 226 (8.9\%) & 209 (9.7\%)\\
-\cellcolor{gray!6}{\hspace{1em}Depression scale} & \cellcolor{gray!6}{1,099 (9.5\%)} & \cellcolor{gray!6}{180 (7.3\%)} & \cellcolor{gray!6}{410 (9.3\%)} & \cellcolor{gray!6}{262 (10.4\%)} & \cellcolor{gray!6}{247 (11.5\%)}\\
-\hspace{1em}Micro awake index & 3,957 (34.3\%) & 694 (28.1\%) & 1,504 (34.2\%) & 939 (37.1\%) & 820 (38.0\%)\\
-\cellcolor{gray!6}{\hspace{1em}Mean nocturnal SaO2} & \cellcolor{gray!6}{3,206 (27.8\%)} & \cellcolor{gray!6}{691 (28.0\%)} & \cellcolor{gray!6}{1,266 (28.8\%)} & \cellcolor{gray!6}{717 (28.4\%)} & \cellcolor{gray!6}{532 (24.7\%)}\\
-\hspace{1em}Gender (male) & 14 (0.1\%) & 2 (0.1\%) & 8 (0.2\%) & 3 (0.1\%) & 1 (0.0\%)\\
-\cellcolor{gray!6}{\hspace{1em}Hypertension} & \cellcolor{gray!6}{50 (0.4\%)} & \cellcolor{gray!6}{12 (0.5\%)} & \cellcolor{gray!6}{21 (0.5\%)} & \cellcolor{gray!6}{10 (0.4\%)} & \cellcolor{gray!6}{7 (0.3\%)}\\
-\hspace{1em}Hypercholesterolemia & 48 (0.4\%) & 9 (0.4\%) & 19 (0.4\%) & 12 (0.5\%) & 8 (0.4\%)\\
-\cellcolor{gray!6}{\hspace{1em}Restless legs syndrome} & \cellcolor{gray!6}{73 (0.6\%)} & \cellcolor{gray!6}{19 (0.8\%)} & \cellcolor{gray!6}{22 (0.5\%)} & \cellcolor{gray!6}{20 (0.8\%)} & \cellcolor{gray!6}{12 (0.6\%)}\\
-\addlinespace[0.3em]
-\multicolumn{6}{l}{\textbf{Variables at follow-up}}\\
-\hspace{1em}Nocturia & 83 (0.7\%) & 20 (0.8\%) & 32 (0.7\%) & 16 (0.6\%) & 15 (0.7\%)\\
-\cellcolor{gray!6}{\hspace{1em}Pichot's fatigue scale} & \cellcolor{gray!6}{1,135 (9.8\%)} & \cellcolor{gray!6}{182 (7.4\%)} & \cellcolor{gray!6}{443 (10.1\%)} & \cellcolor{gray!6}{256 (10.1\%)} & \cellcolor{gray!6}{254 (11.8\%)}\\
-\hspace{1em}Mask type & 1,171 (10.1\%) & 261 (10.6\%) & 431 (9.8\%) & 263 (10.4\%) & 216 (10.0\%)\\
-\cellcolor{gray!6}{\hspace{1em}Humidifier} & \cellcolor{gray!6}{28 (0.2\%)} & \cellcolor{gray!6}{9 (0.4\%)} & \cellcolor{gray!6}{8 (0.2\%)} & \cellcolor{gray!6}{7 (0.3\%)} & \cellcolor{gray!6}{4 (0.2\%)}\\
-\hspace{1em}Residual apnea  hypopnea index under CPAP & 769 (6.7\%) & 206 (8.3\%) & 281 (6.4\%) & 167 (6.6\%) & 115 (5.3\%)\\
-\cellcolor{gray!6}{\hspace{1em}Average pressure of CPAP} & \cellcolor{gray!6}{1,660 (14.4\%)} & \cellcolor{gray!6}{370 (15.0\%)} & \cellcolor{gray!6}{638 (14.5\%)} & \cellcolor{gray!6}{369 (14.6\%)} & \cellcolor{gray!6}{283 (13.1\%)}\\
-\bottomrule
-\end{tabular}
-\begin{tablenotes}
-\item ESS : Epworth Sleepiness Scale; CPAP : Continuous Positive Airway Pressure
-\end{tablenotes}
-\end{threeparttable}
-\end{table}
-\end{landscape}
 \restoregeometry % Restore the global document page margins
 \clearpage
 \begin{table}[H]
@@ -107,12 +95,12 @@ We performed 10 imputed data sets using predictive mean matching as imputation m
 \toprule
 Truncations & Mean & Minimum & Maximum\\
 \midrule
-\cellcolor{gray!6}{(0; 1)} & \cellcolor{gray!6}{4.0(4.0; 4.0)} & \cellcolor{gray!6}{1.2(1.0; 1.3)} & \cellcolor{gray!6}{48.2(29.9; 75.0)}\\
-(0.01; 0.99) & 4.0(4.0; 4.0) & 1.9(1.8; 1.9) & 11.8(11.1; 12.6)\\
-\cellcolor{gray!6}{(0.05; 0.95)} & \cellcolor{gray!6}{3.9(3.9; 3.9)} & \cellcolor{gray!6}{2.1(2.1; 2.2)} & \cellcolor{gray!6}{7.8(7.5; 8.0)}\\
-(0.1; 0.9) & 3.8(3.8; 3.8) & 2.3(2.2; 2.3) & 6.4(6.3; 6.5)\\
-\cellcolor{gray!6}{(0.25; 0.75)} & \cellcolor{gray!6}{3.6(3.6; 3.6)} & \cellcolor{gray!6}{2.6(2.5; 2.7)} & \cellcolor{gray!6}{4.7(4.7; 4.8)}\\
-(0.5; 0.5) & 3.4(3.4; 3.5) & 3.4(3.4; 3.5) & 3.4(3.4; 3.5)\\
+\cellcolor{gray!6}{(0; 1)} & \cellcolor{gray!6}{4.0(4.0; 4.0)} & \cellcolor{gray!6}{1.5(1.3; 1.7)} & \cellcolor{gray!6}{22.4(17.1; 28.8)}\\
+(0.01; 0.99) & 4.0(4.0; 4.0) & 2.0(1.9; 2.1) & 10.1(9.6; 10.7)\\
+\cellcolor{gray!6}{(0.05; 0.95)} & \cellcolor{gray!6}{3.9(3.9; 3.9)} & \cellcolor{gray!6}{2.2(2.2; 2.3)} & \cellcolor{gray!6}{7.3(7.1; 7.5)}\\
+(0.1; 0.9) & 3.9(3.8; 3.9) & 2.3(2.3; 2.4) & 6.2(6.1; 6.3)\\
+\cellcolor{gray!6}{(0.25; 0.75)} & \cellcolor{gray!6}{3.7(3.6; 3.7)} & \cellcolor{gray!6}{2.7(2.6; 2.7)} & \cellcolor{gray!6}{4.8(4.8; 4.9)}\\
+(0.5; 0.5) & 3.6(3.5; 3.7) & 3.6(3.5; 3.7) & 3.6(3.5; 3.7)\\
 \bottomrule
 \multicolumn{4}{l}{\rule{0pt}{1em}Data are presented as mean (95\% confidence interval) of bootstrap iterations}\\
 \end{tabular}}
@@ -127,34 +115,65 @@ Truncations & Mean & Minimum & Maximum\\
 \toprule
 Variables & Coefficients of 4-6 h group & Coefficients of 6-7 h group & Coefficients of 7-10 h group\\
 \midrule
-\cellcolor{gray!6}{Diagnosis age (years)} & \cellcolor{gray!6}{0.011(0.006; 0.016)} & \cellcolor{gray!6}{0.022(0.017; 0.028)} & \cellcolor{gray!6}{0.029(0.023; 0.035)}\\
-Diagnosis body mass index (kg/m2) & -0.003(-0.014; 0.007) & -0.007(-0.020; 0.005) & -0.002(-0.013; 0.009)\\
-\cellcolor{gray!6}{Diagnosis neck circumference} & \cellcolor{gray!6}{0.003(-0.014; 0.021)} & \cellcolor{gray!6}{0.024(0.005; 0.044)} & \cellcolor{gray!6}{0.027(0.008; 0.048)}\\
-Diagnosis sleepiness at the wheel & 0.210(0.077; 0.334) & 0.135(-0.012; 0.289) & -0.003(-0.153; 0.150)\\
-\cellcolor{gray!6}{Diagnosis morning tiredness} & \cellcolor{gray!6}{0.049(-0.101; 0.202)} & \cellcolor{gray!6}{0.010(-0.160; 0.174)} & \cellcolor{gray!6}{0.119(-0.062; 0.297)}\\
-Diagnosis morning headaches & 0.010(-0.142; 0.155) & 0.096(-0.080; 0.260) & 0.031(-0.158; 0.201)\\
-\cellcolor{gray!6}{Diagnosis libido disorder} & \cellcolor{gray!6}{-0.013(-0.179; 0.152)} & \cellcolor{gray!6}{0.129(-0.061; 0.316)} & \cellcolor{gray!6}{-0.014(-0.221; 0.180)}\\
-Diagnosis erectile dysfunction & -0.237(-0.419; -0.050) & -0.228(-0.446; -0.027) & -0.156(-0.382; 0.074)\\
-\cellcolor{gray!6}{Diagnosis night sweating} & \cellcolor{gray!6}{-0.025(-0.154; 0.105)} & \cellcolor{gray!6}{-0.011(-0.170; 0.163)} & \cellcolor{gray!6}{0.024(-0.142; 0.192)}\\
-Diagnosis epworth sleepiness scale & 0.004(-0.010; 0.016) & -0.014(-0.029; 0.002) & -0.010(-0.025; 0.006)\\
-\cellcolor{gray!6}{Diagnosis pichot's fatigue scale} & \cellcolor{gray!6}{0.006(-0.005; 0.017)} & \cellcolor{gray!6}{0.027(0.015; 0.040)} & \cellcolor{gray!6}{0.025(0.012; 0.038)}\\
-Diagnosis depression scale & 0.009(-0.011; 0.029) & -0.004(-0.026; 0.018) & 0.000(-0.024; 0.024)\\
-\cellcolor{gray!6}{Diagnosis micro awake index} & \cellcolor{gray!6}{-0.001(-0.004; 0.003)} & \cellcolor{gray!6}{0.006(0.002; 0.010)} & \cellcolor{gray!6}{0.003(-0.001; 0.007)}\\
-Diagnosis mean nocturnal SaO2 & 0.008(-0.014; 0.025) & -0.006(-0.030; 0.014) & 0.006(-0.018; 0.025)\\
-\cellcolor{gray!6}{Diagnosis delay between visit and sleep examination} & \cellcolor{gray!6}{0.000(-0.000; 0.000)} & \cellcolor{gray!6}{0.000(-0.000; 0.000)} & \cellcolor{gray!6}{0.000(-0.000; 0.000)}\\
-Apnea Hypopnea Index at diagnosis & 0.004(0.001; 0.008) & 0.005(0.001; 0.010) & 0.009(0.004; 0.013)\\
-\cellcolor{gray!6}{Gender (male)} & \cellcolor{gray!6}{0.086(-0.071; 0.248)} & \cellcolor{gray!6}{-0.033(-0.217; 0.159)} & \cellcolor{gray!6}{-0.222(-0.408; -0.027)}\\
-Diabetes & -0.165(-0.304; -0.040) & -0.261(-0.407; -0.112) & -0.130(-0.276; 0.023)\\
-\cellcolor{gray!6}{Hypercholesterolemia} & \cellcolor{gray!6}{0.050(-0.080; 0.178)} & \cellcolor{gray!6}{0.088(-0.061; 0.231)} & \cellcolor{gray!6}{0.114(-0.033; 0.263)}\\
-Restless legs syndrome & 0.192(0.046; 0.332) & 0.076(-0.086; 0.233) & 0.053(-0.114; 0.233)\\
-\cellcolor{gray!6}{Daytime sleepiness} & \cellcolor{gray!6}{-0.096(-0.258; 0.064)} & \cellcolor{gray!6}{-0.060(-0.240; 0.117)} & \cellcolor{gray!6}{-0.177(-0.371; 0.000)}\\
-Morning tiredness & -0.040(-0.202; 0.115) & -0.105(-0.284; 0.068) & -0.176(-0.376; 0.013)\\
-\cellcolor{gray!6}{Morning headaches} & \cellcolor{gray!6}{0.054(-0.111; 0.217)} & \cellcolor{gray!6}{0.081(-0.112; 0.276)} & \cellcolor{gray!6}{-0.025(-0.226; 0.173)}\\
-Libido disorder & 0.276(0.105; 0.440) & 0.202(0.016; 0.397) & 0.353(0.143; 0.556)\\
-\cellcolor{gray!6}{Night sweating} & \cellcolor{gray!6}{-0.051(-0.203; 0.111)} & \cellcolor{gray!6}{-0.104(-0.285; 0.062)} & \cellcolor{gray!6}{-0.234(-0.437; -0.051)}\\
-Pichot's fatigue scale & -0.034(-0.044; -0.024) & -0.057(-0.070; -0.045) & -0.037(-0.049; -0.025)\\
-\cellcolor{gray!6}{Average pressure of CPAP} & \cellcolor{gray!6}{0.055(0.030; 0.081)} & \cellcolor{gray!6}{0.076(0.048; 0.105)} & \cellcolor{gray!6}{0.116(0.085; 0.144)}\\
-Number of ADR types under CPAP & -0.263(-0.312; -0.215) & -0.343(-0.404; -0.276) & -0.374(-0.447; -0.307)\\
+\cellcolor{gray!6}{Diagnosis age (years)} & \cellcolor{gray!6}{0.013(0.008; 0.018)} & \cellcolor{gray!6}{0.022(0.016; 0.028)} & \cellcolor{gray!6}{0.030(0.024; 0.037)}\\
+Diagnosis neck circumference & 0.010(-0.005; 0.027) & 0.007(-0.011; 0.024) & 0.021(0.004; 0.039)\\
+\cellcolor{gray!6}{Diagnosis sleepiness at the wheel} & \cellcolor{gray!6}{0.205(0.084; 0.338)} & \cellcolor{gray!6}{0.197(0.047; 0.348)} & \cellcolor{gray!6}{0.060(-0.088; 0.213)}\\
+Diagnosis morning tiredness & 0.114(-0.037; 0.273) & 0.045(-0.138; 0.222) & 0.153(-0.033; 0.338)\\
+\cellcolor{gray!6}{Diagnosis morning headaches} & \cellcolor{gray!6}{0.012(-0.126; 0.153)} & \cellcolor{gray!6}{0.053(-0.112; 0.229)} & \cellcolor{gray!6}{0.005(-0.168; 0.162)}\\
+Diagnosis libido disorder & -0.096(-0.253; 0.071) & -0.015(-0.199; 0.184) & -0.056(-0.252; 0.149)\\
+\cellcolor{gray!6}{Diagnosis night sweating} & \cellcolor{gray!6}{-0.046(-0.191; 0.098)} & \cellcolor{gray!6}{-0.004(-0.173; 0.167)} & \cellcolor{gray!6}{-0.005(-0.176; 0.162)}\\
+Diagnosis exertional dyspnea & -0.111(-0.243; 0.019) & -0.129(-0.275; 0.013) & -0.033(-0.179; 0.119)\\
+\cellcolor{gray!6}{Diagnosis epworth sleepiness scale} & \cellcolor{gray!6}{0.001(-0.012; 0.013)} & \cellcolor{gray!6}{-0.010(-0.024; 0.005)} & \cellcolor{gray!6}{-0.009(-0.024; 0.006)}\\
+Diagnosis pichot's fatigue scale & 0.005(-0.006; 0.016) & 0.025(0.013; 0.037) & 0.029(0.016; 0.041)\\
+\cellcolor{gray!6}{Diagnosis depression scale} & \cellcolor{gray!6}{0.003(-0.016; 0.022)} & \cellcolor{gray!6}{0.006(-0.014; 0.028)} & \cellcolor{gray!6}{0.004(-0.019; 0.028)}\\
+Apnea Hypopnea Index at diagnosis & 0.004(0.002; 0.007) & 0.012(0.008; 0.015) & 0.013(0.009; 0.016)\\
+\cellcolor{gray!6}{Gender (male)} & \cellcolor{gray!6}{-0.002(-0.152; 0.145)} & \cellcolor{gray!6}{0.073(-0.090; 0.231)} & \cellcolor{gray!6}{-0.016(-0.194; 0.152)}\\
+Hypertension & -0.037(-0.155; 0.084) & 0.001(-0.153; 0.132) & 0.035(-0.105; 0.183)\\
+\cellcolor{gray!6}{Restless legs syndrome} & \cellcolor{gray!6}{0.146(0.005; 0.288)} & \cellcolor{gray!6}{0.069(-0.099; 0.243)} & \cellcolor{gray!6}{0.020(-0.155; 0.183)}\\
+Morning tiredness & -0.106(-0.254; 0.028) & -0.082(-0.244; 0.067) & -0.295(-0.459; -0.133)\\
+\cellcolor{gray!6}{Morning headaches} & \cellcolor{gray!6}{0.056(-0.106; 0.208)} & \cellcolor{gray!6}{0.052(-0.116; 0.228)} & \cellcolor{gray!6}{-0.093(-0.290; 0.108)}\\
+Libido disorder & 0.304(0.121; 0.487) & 0.301(0.092; 0.495) & 0.398(0.187; 0.614)\\
+\cellcolor{gray!6}{Night sweating} & \cellcolor{gray!6}{-0.084(-0.236; 0.068)} & \cellcolor{gray!6}{-0.137(-0.321; 0.034)} & \cellcolor{gray!6}{-0.255(-0.446; -0.065)}\\
+Nocturia & -0.084(-0.199; 0.031) & -0.230(-0.360; -0.090) & -0.025(-0.165; 0.119)\\
+\cellcolor{gray!6}{Pichot's fatigue scale} & \cellcolor{gray!6}{-0.040(-0.050; -0.031)} & \cellcolor{gray!6}{-0.061(-0.073; -0.051)} & \cellcolor{gray!6}{-0.045(-0.057; -0.033)}\\
+Residual apnea  hypopnea index under CPAP & -0.035(-0.047; -0.024) & -0.037(-0.052; -0.023) & -0.029(-0.043; -0.017)\\
+\bottomrule
+\multicolumn{4}{l}{\rule{0pt}{1em}Data are presented as mean (95\% confidence interval) of bootstrap iterations}\\
+\multicolumn{4}{l}{\rule{0pt}{1em}ESS : Epworth Sleepiness Scale; CPAP : Continuous Positive Airway Pressure; ADR : adverse drug reaction}\\
+\end{tabular}
+\end{table}
+\clearpage
+\begin{table}[H]
+
+\caption{\label{tab:Wheight_coefficients}IPWRA weight model coefficient to assess the probability of being in an adherence group}
+\centering
+\fontsize{7}{9}\selectfont
+\begin{tabular}[t]{cccc}
+\toprule
+Variables & Coefficients of 4-6 h group & Coefficients of 6-7 h group & Coefficients of 7-10 h group\\
+\midrule
+\cellcolor{gray!6}{Diagnosis age (years)} & \cellcolor{gray!6}{0.013(0.008; 0.018)} & \cellcolor{gray!6}{0.022(0.016; 0.028)} & \cellcolor{gray!6}{0.030(0.024; 0.037)}\\
+Diagnosis neck circumference & 0.010(-0.005; 0.027) & 0.007(-0.011; 0.024) & 0.021(0.004; 0.039)\\
+\cellcolor{gray!6}{Diagnosis sleepiness at the wheel} & \cellcolor{gray!6}{0.205(0.084; 0.338)} & \cellcolor{gray!6}{0.197(0.047; 0.348)} & \cellcolor{gray!6}{0.060(-0.088; 0.213)}\\
+Diagnosis morning tiredness & 0.114(-0.037; 0.273) & 0.045(-0.138; 0.222) & 0.153(-0.033; 0.338)\\
+\cellcolor{gray!6}{Diagnosis morning headaches} & \cellcolor{gray!6}{0.012(-0.126; 0.153)} & \cellcolor{gray!6}{0.053(-0.112; 0.229)} & \cellcolor{gray!6}{0.005(-0.168; 0.162)}\\
+Diagnosis libido disorder & -0.096(-0.253; 0.071) & -0.015(-0.199; 0.184) & -0.056(-0.252; 0.149)\\
+\cellcolor{gray!6}{Diagnosis night sweating} & \cellcolor{gray!6}{-0.046(-0.191; 0.098)} & \cellcolor{gray!6}{-0.004(-0.173; 0.167)} & \cellcolor{gray!6}{-0.005(-0.176; 0.162)}\\
+Diagnosis exertional dyspnea & -0.111(-0.243; 0.019) & -0.129(-0.275; 0.013) & -0.033(-0.179; 0.119)\\
+\cellcolor{gray!6}{Diagnosis epworth sleepiness scale} & \cellcolor{gray!6}{0.001(-0.012; 0.013)} & \cellcolor{gray!6}{-0.010(-0.024; 0.005)} & \cellcolor{gray!6}{-0.009(-0.024; 0.006)}\\
+Diagnosis pichot's fatigue scale & 0.005(-0.006; 0.016) & 0.025(0.013; 0.037) & 0.029(0.016; 0.041)\\
+\cellcolor{gray!6}{Diagnosis depression scale} & \cellcolor{gray!6}{0.003(-0.016; 0.022)} & \cellcolor{gray!6}{0.006(-0.014; 0.028)} & \cellcolor{gray!6}{0.004(-0.019; 0.028)}\\
+Apnea Hypopnea Index at diagnosis & 0.004(0.002; 0.007) & 0.012(0.008; 0.015) & 0.013(0.009; 0.016)\\
+\cellcolor{gray!6}{Gender (male)} & \cellcolor{gray!6}{-0.002(-0.152; 0.145)} & \cellcolor{gray!6}{0.073(-0.090; 0.231)} & \cellcolor{gray!6}{-0.016(-0.194; 0.152)}\\
+Hypertension & -0.037(-0.155; 0.084) & 0.001(-0.153; 0.132) & 0.035(-0.105; 0.183)\\
+\cellcolor{gray!6}{Restless legs syndrome} & \cellcolor{gray!6}{0.146(0.005; 0.288)} & \cellcolor{gray!6}{0.069(-0.099; 0.243)} & \cellcolor{gray!6}{0.020(-0.155; 0.183)}\\
+Morning tiredness & -0.106(-0.254; 0.028) & -0.082(-0.244; 0.067) & -0.295(-0.459; -0.133)\\
+\cellcolor{gray!6}{Morning headaches} & \cellcolor{gray!6}{0.056(-0.106; 0.208)} & \cellcolor{gray!6}{0.052(-0.116; 0.228)} & \cellcolor{gray!6}{-0.093(-0.290; 0.108)}\\
+Libido disorder & 0.304(0.121; 0.487) & 0.301(0.092; 0.495) & 0.398(0.187; 0.614)\\
+\cellcolor{gray!6}{Night sweating} & \cellcolor{gray!6}{-0.084(-0.236; 0.068)} & \cellcolor{gray!6}{-0.137(-0.321; 0.034)} & \cellcolor{gray!6}{-0.255(-0.446; -0.065)}\\
+Nocturia & -0.084(-0.199; 0.031) & -0.230(-0.360; -0.090) & -0.025(-0.165; 0.119)\\
+\cellcolor{gray!6}{Pichot's fatigue scale} & \cellcolor{gray!6}{-0.040(-0.050; -0.031)} & \cellcolor{gray!6}{-0.061(-0.073; -0.051)} & \cellcolor{gray!6}{-0.045(-0.057; -0.033)}\\
+Residual apnea  hypopnea index under CPAP & -0.035(-0.047; -0.024) & -0.037(-0.052; -0.023) & -0.029(-0.043; -0.017)\\
 \bottomrule
 \multicolumn{4}{l}{\rule{0pt}{1em}Data are presented as mean (95\% confidence interval) of bootstrap iterations}\\
 \multicolumn{4}{l}{\rule{0pt}{1em}ESS : Epworth Sleepiness Scale; CPAP : Continuous Positive Airway Pressure; ADR : adverse drug reaction}\\
@@ -180,53 +199,37 @@ Label & Model coefficients\\
 \multicolumn{2}{l}{\rule{0pt}{1em}Data are presented as mean (95\% confidence interval) of bootstrap iterations}\\
 \multicolumn{2}{l}{\rule{0pt}{1em}ESS : Epworth Sleepiness Scale; CPAP : Continuous Positive Airway Pressure; ADR : adverse drug reaction}\\
 \endlastfoot
-\cellcolor{gray!6}{Diagnosis age (years)} & \cellcolor{gray!6}{-0.022(-0.029; -0.016)}\\
-Diagnosis body mass index (kg/m2) & -0.022(-0.035; -0.010)\\
-\cellcolor{gray!6}{Diagnosis neck circumference} & \cellcolor{gray!6}{0.016(-0.003; 0.037)}\\
-Diagnosis tobacco status 1 & 0.095(-0.064; 0.256)\\
-\cellcolor{gray!6}{Diagnosis tobacco status 2} & \cellcolor{gray!6}{-0.157(-0.381; 0.072)}\\
-Diagnosis sleepiness at the wheel & 0.234(0.067; 0.406)\\
-\cellcolor{gray!6}{Diagnosis morning tiredness} & \cellcolor{gray!6}{-0.335(-0.524; -0.142)}\\
-Diagnosis morning headaches & -0.023(-0.196; 0.154)\\
-\cellcolor{gray!6}{Diagnosis libido disorder} & \cellcolor{gray!6}{-0.032(-0.255; 0.191)}\\
-Diagnosis erectile dysfunction & 0.166(-0.085; 0.415)\\
-\cellcolor{gray!6}{Diagnosis night sweating} & \cellcolor{gray!6}{-0.049(-0.233; 0.135)}\\
-Diagnosis exertional dyspnea & -0.054(-0.222; 0.127)\\
-\cellcolor{gray!6}{Diagnosis nocturia} & \cellcolor{gray!6}{0.017(-0.163; 0.180)}\\
-Diagnosis respiratory arrests & -0.134(-0.279; 0.015)\\
-\cellcolor{gray!6}{Diagnosis epworth sleepiness scale} & \cellcolor{gray!6}{0.347(0.326; 0.365)}\\
-Diagnosis pichot's fatigue scale & -0.106(-0.120; -0.092)\\
-\cellcolor{gray!6}{Diagnosis depression scale} & \cellcolor{gray!6}{-0.030(-0.056; -0.002)}\\
-Diagnosis micro awake index & 0.005(0.001; 0.009)\\
-\cellcolor{gray!6}{Diagnosis mean nocturnal SaO2} & \cellcolor{gray!6}{0.015(-0.004; 0.036)}\\
-Diagnosis delay between visit and sleep examination & -0.000(-0.000; 0.000)\\
-\cellcolor{gray!6}{Apnea Hypopnea Index at diagnosis} & \cellcolor{gray!6}{-0.018(-0.022; -0.013)}\\
-Diagnosis blood gases & 0.136(-0.044; 0.311)\\
-\cellcolor{gray!6}{Diagnosis spirometry} & \cellcolor{gray!6}{0.106(-0.055; 0.278)}\\
-Gender (male) & -0.036(-0.248; 0.163)\\
-\cellcolor{gray!6}{Hypertension} & \cellcolor{gray!6}{-0.009(-0.171; 0.146)}\\
-Diabetes & -0.116(-0.279; 0.041)\\
-\cellcolor{gray!6}{Hypercholesterolemia} & \cellcolor{gray!6}{-0.100(-0.248; 0.055)}\\
-Restless legs syndrome & -0.007(-0.191; 0.170)\\
-\cellcolor{gray!6}{Daytime sleepiness} & \cellcolor{gray!6}{1.081(0.897; 1.273)}\\
-Morning tiredness & -0.205(-0.400; -0.004)\\
-\cellcolor{gray!6}{Morning headaches} & \cellcolor{gray!6}{-0.184(-0.405; 0.035)}\\
-Libido disorder & 0.056(-0.163; 0.280)\\
-\cellcolor{gray!6}{Night sweating} & \cellcolor{gray!6}{0.230(0.004; 0.445)}\\
-Nocturia & -0.158(-0.338; 0.009)\\
-\cellcolor{gray!6}{Pichot's fatigue scale} & \cellcolor{gray!6}{0.327(0.312; 0.343)}\\
-Humidifier & 0.042(-0.110; 0.198)\\
-\cellcolor{gray!6}{Residual apnea  hypopnea index under CPAP} & \cellcolor{gray!6}{0.042(0.023; 0.060)}\\
-Average pressure of CPAP & -0.060(-0.092; -0.029)\\
-\cellcolor{gray!6}{Duration since diagnosis (year)} & \cellcolor{gray!6}{-0.010(-0.057; 0.035)}\\
-Number of ADR types under CPAP & 0.203(0.140; 0.277)\\
-\cellcolor{gray!6}{Adherence groups 1} & \cellcolor{gray!6}{0.826(0.606; 1.031)}\\
-Adherence groups 2 & 0.420(0.225; 0.601)\\
-\cellcolor{gray!6}{Adherence groups 3} & \cellcolor{gray!6}{0.259(0.052; 0.468)}\\
-Mask type 2 & -0.113(-0.293; 0.063)\\
-\cellcolor{gray!6}{Mask type 3} & \cellcolor{gray!6}{-0.138(-0.371; 0.076)}\\
-Mask type 4 & -1.129(-2.049; -0.180)\\*
+\cellcolor{gray!6}{Diagnosis age (years)} & \cellcolor{gray!6}{-0.016(-0.022; -0.009)}\\
+Diagnosis neck circumference & -0.014(-0.032; 0.004)\\
+\cellcolor{gray!6}{Diagnosis tobacco status 1} & \cellcolor{gray!6}{0.055(-0.104; 0.210)}\\
+Diagnosis tobacco status 2 & -0.166(-0.399; 0.041)\\
+\cellcolor{gray!6}{Diagnosis sleepiness at the wheel} & \cellcolor{gray!6}{0.328(0.170; 0.490)}\\
+Diagnosis morning tiredness & -0.356(-0.546; -0.163)\\
+\cellcolor{gray!6}{Diagnosis morning headaches} & \cellcolor{gray!6}{-0.038(-0.217; 0.147)}\\
+Diagnosis libido disorder & 0.047(-0.148; 0.256)\\
+\cellcolor{gray!6}{Diagnosis night sweating} & \cellcolor{gray!6}{-0.028(-0.189; 0.131)}\\
+Diagnosis exertional dyspnea & -0.103(-0.254; 0.049)\\
+\cellcolor{gray!6}{Diagnosis epworth sleepiness scale} & \cellcolor{gray!6}{0.344(0.325; 0.362)}\\
+Diagnosis pichot's fatigue scale & -0.110(-0.124; -0.096)\\
+\cellcolor{gray!6}{Diagnosis depression scale} & \cellcolor{gray!6}{-0.028(-0.053; -0.002)}\\
+Apnea Hypopnea Index at diagnosis & -0.019(-0.023; -0.015)\\
+\cellcolor{gray!6}{Gender (male)} & \cellcolor{gray!6}{0.268(0.091; 0.435)}\\
+Hypertension & -0.012(-0.172; 0.140)\\
+\cellcolor{gray!6}{Restless legs syndrome} & \cellcolor{gray!6}{0.145(-0.045; 0.330)}\\
+Morning tiredness & 0.421(0.259; 0.586)\\
+\cellcolor{gray!6}{Morning headaches} & \cellcolor{gray!6}{-0.010(-0.227; 0.208)}\\
+Libido disorder & 0.124(-0.089; 0.341)\\
+\cellcolor{gray!6}{Night sweating} & \cellcolor{gray!6}{0.283(0.080; 0.478)}\\
+Nocturia & -0.199(-0.346; -0.054)\\
+\cellcolor{gray!6}{Pichot's fatigue scale} & \cellcolor{gray!6}{0.336(0.321; 0.351)}\\
+Residual apnea  hypopnea index under CPAP & 0.030(0.014; 0.048)\\
+\cellcolor{gray!6}{Adherence groups 1} & \cellcolor{gray!6}{1.054(0.848; 1.265)}\\
+Adherence groups 2 & 0.536(0.351; 0.720)\\
+\cellcolor{gray!6}{Adherence groups 3} & \cellcolor{gray!6}{0.291(0.087; 0.500)}\\*
 \end{longtable}
 \endgroup{}
 \clearpage
+\bibliographystyle{annalsofats}
+\bibliography{DAG_ref.bib}
+      
 \end{document}

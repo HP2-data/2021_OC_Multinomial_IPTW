@@ -29,7 +29,6 @@ df <- df %>% mutate_if( str_detect(colnames(.),"date"),as_date) %>%
   fill(CHA_id_sexe) %>% # remplace les manquant du sex par la derniere valeurs 
   mutate(SOM_estimDureeMoyDeSom_Cor = as.numeric(SOM_estimDureeMoyDeSom_Cor, units="secs")/3600) %>%  # sleep duration in hours
   mutate(SOM_estimDureeMoyDeSom_Cor = ifelse(SOM_estimDureeMoyDeSom_Cor >= 14,NA,SOM_estimDureeMoyDeSom_Cor)) %>% 
-  
   arrange(id_patient) %>% 
   ungroup() %>% 
   # correction to match scale grammar
@@ -54,7 +53,7 @@ df <- df %>% mutate(INS_PPC_effet_ind = reduce(select(.,all_of(vec_effet_indez_p
 
 # remove column echelle et autre column corrélé
 
-df <- df %>% select(everything(),-contains("GDS"),GDS_gazDuSang,-contains("EFR"),EFR_spirometrie,-ends_with("_echelle"))
+df <- df %>% select(everything(),-contains("GDS"),GDS_gazDuSang,-contains("EFR"),EFR_spirometrie,-ends_with("_echelle"),SYM_fatigueMatinale_echelle)
 
 
 # Choix de retirer des variables pas ou peu informative
@@ -66,7 +65,7 @@ df <- df %>% select(-c(SOM_id_autrePathoSommeil,
                         PPC_id_TypePPC,
                         TTT_activitePhysique,
                         TTT_conseilsHygienoDietetiques),
-                    -SOM_estimDureeMoyDeSom_Cor, # issue because of lot outliers 
+                   # -SOM_estimDureeMoyDeSom_Cor, # issue because of lot outliers 
 
                     # remove height and weight keep BMI
                     -CHA_poids,

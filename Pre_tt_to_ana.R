@@ -1,5 +1,3 @@
-
-
 # packages 
 library(data.table)
 library(tidyverse)
@@ -19,9 +17,11 @@ visite_seuil <- 2
 
 
 Data_post_pre_tt <- read_rds("data/genere/data_prett.rds") %>% 
-  select(-Mesure_unique_INS_visite_Max) %>% # remove instrumental var
-  filter(num_visite != 1)   # remove first visit because include in visit-init var
-
+  select(-Mesure_unique_INS_visite_Max,
+         -SOM_estimDureeMoyDeSom_Cor,
+         -contains("fatigueMatinale_echelle")) %>% # remove instrumental var
+  filter(num_visite != 1) #%>%    # remove first visit because include in visit-init var
+ # filter(INS_tmp_entre_rdv != 0) # remove 0 time visit
 
 
 # Select number of visit 
@@ -211,9 +211,7 @@ df_few_pat <- corelation_var_df %>% select(-all_of(var_cor_retire))
 
 
 # Remove var with to few moda
-df_pre_impute <- df_few_pat %>% select(-all_of(nearZeroVar(.,freqCut = 80/20,names = TRUE)))
-
-
+df_pre_impute <- df_few_pat #%>% select(-all_of(nearZeroVar(.,freqCut = 80/20,names = TRUE)),Vis_init_SYM_troubleMemoire,SYM_echelleDepression,Vis_init_SYM_echelleDepression,Mesure_unique_ATC_depression)
 
 
 
@@ -233,5 +231,8 @@ if("Vis_init_SYM_troubleErection" %in% colnames(df_post_imput)){
 }
 saveRDS(df_pre_impute, file = paste0("data/genere/data_pre_impute_nb_vis_",visite_seuil,".rds"))
 saveRDS(df_post_imput, file = paste0("data/genere/data_prett_nb_vis_",visite_seuil,".rds"))
+
+
+
 
 

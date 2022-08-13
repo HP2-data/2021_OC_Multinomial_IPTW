@@ -117,7 +117,7 @@ impute_si_changement <- function(data_frame_a_verif,path,reimputation = FALSE){
       print("imputation avec warning")
       print(imputed_Data_func$loggedEvents)}
     res <- mice::complete(imputed_Data_func)
-    saveRDS(res, file = paste0("data/genere/data_impute.rds"))
+    saveRDS(res, file = paste0(path))
   } else {stop("Error with function condition not met")}
   return(res)
 }
@@ -324,6 +324,7 @@ calcule_pds_stage <- function(donne,
                               out_come,
                               percentile_tronc = c(0,1,5,10,25,50)/100 ,
                               talbe_and_plot = TRUE){
+
   # fetch function parameters
   tempcall <- match.call()
   
@@ -340,7 +341,7 @@ calcule_pds_stage <- function(donne,
     weighting_function_params <- append(weighting_function_params,supplementary_weighting_function_params)
   }
 
-  
+
   ponderation <- do.call(weighting_function,weighting_function_params)
 
   
